@@ -1,7 +1,8 @@
 import '@/styles/globals.css'
 import { Rubik } from '@next/font/google'
 import Head from 'next/head'
-import NewGameForm from '@/components/Form/NewGameForm'
+import AuthForm from './../components/Form/AuthForm';
+import PlayForm from '@/components/Form/PlayForm';
 const rubik = Rubik({ subsets: ['latin'] })
 
 export default function App ({ Component, pageProps }) {
@@ -11,7 +12,8 @@ export default function App ({ Component, pageProps }) {
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
 			</Head>
 			<Component {...pageProps} />
-			<NewGameForm />
+			<PlayForm />
+			<AuthForm />
 			<style jsx global>{`
         html {
           font-family: ${rubik.style.fontFamily};
