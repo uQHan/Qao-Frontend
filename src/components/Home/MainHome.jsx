@@ -1,9 +1,12 @@
 import categories from '@/assets/categories.json'
 import PageFooter from '../PageFooter'
 import playSound from '@/helpers/playSound'
+import HomeHeader from './HomeHeader'
+import { useBoundStore } from '@/store/useBoundStore'
 
-export default function MainHome () {
-	function handleTitleHover (e) {
+export default function MainHome() {
+	const { setDest } = useBoundStore(state => state)
+	function handleTitleHover(e) {
 		e.target.classList.add('jello-vertical')
 		e.target.style.color = categories[Math.floor(Math.random() * categories.length)].color
 		e.target.addEventListener('animationend', () => e.target.classList.remove('jello-vertical'))
@@ -11,17 +14,19 @@ export default function MainHome () {
 
 	const handleTitleLeave = (e) => (e.target.style.color = 'white')
 
-	function handlePlay () {
+	function handlePlay() {
 		playSound('pop')
 		document.getElementById('newGameDialog')?.showModal()
 	}
-	function handleCreate () {
+	function handleCreate() {
 		playSound('pop')
+		setDest('create')
 		document.getElementById('authDialog')?.showModal()
 	}
 
 	return (
-		<main className='mainHome max-w-6xl relative  mx-auto w-full min-h-[25rem] flex gap-4 flex-col justify-between items-center px-5 md:px-10 py-20 lg:col-start-2 lg:row-start-1 lg:row-end-3 text-center text-white'>
+		<main className='mainHome bg-vertical-scroll-animation max-w-6xl relative  mx-auto w-full min-h-[25rem] flex gap-4 flex-col justify-between items-center px-5 md:px-10 py-20 lg:col-start-2 lg:row-start-1 lg:row-end-3 text-center text-white'>
+			<HomeHeader />
 			<article>
 				<h1 className='text-8xl font-medium w-full uppercase z-10 relative' translate='no'>
 					{'Qao?'.split('').map((letter, index) => (

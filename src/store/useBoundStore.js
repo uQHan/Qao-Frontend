@@ -4,10 +4,12 @@ import { useQueriesStore } from './useQueries'
 import { useQuestionsStore } from './useQuestions'
 import { useAuthStore } from './useAuth'
 import { use } from 'react'
+import { useCreateQuestionsStore } from './useCreate'
 
 export const useBoundStore = create((...a) => ({
 	...useWildcardsStore(...a),
 	...useQueriesStore(...a),
 	...useQuestionsStore(...a),
-	...useAuthStore(...a)
+	...useAuthStore(...a),
+	...useCreateQuestionsStore(...a),
 }))

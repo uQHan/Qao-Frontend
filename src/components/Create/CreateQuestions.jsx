@@ -4,14 +4,15 @@ import { IoMdSave } from 'react-icons/io';
 import { FaRegQuestionCircle } from 'react-icons/fa';
 import { AiFillBulb } from "react-icons/ai";
 import Image from 'next/image';
+import { useBoundStore } from '@/store/useBoundStore';
 
 const QuizQuestionCreator = () => {
-  const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '' });
+  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, addCreatedCategory, createdCategories, removeCreatedCategory } = useBoundStore(state => (state));
 
   const addQuestion = () => {
     if (currentQuestion.question.trim()) {
-      setQuestions([...questions, currentQuestion]);
+      addCreatedQuestion(currentQuestion);
       setCurrentQuestion({ question: '', answers: ['', '', '', ''], correct: '' });
     }
   };
@@ -27,21 +28,15 @@ const QuizQuestionCreator = () => {
   };
 
   const selectCorrectAnswer = (qIndex, aIndex, event) => {
-    setQuestions((prevQuestions) =>
-      prevQuestions.map((q, i) =>
-        i === qIndex ? { ...q, correct: q.answers[aIndex] } : q
-      )
+    const updatedQuestions = createdQuestions.map((q, i) =>
+      i === qIndex ? { ...q, correct: q.answers[aIndex] } : q
     );
 
-    // Remove 'correctAnswer' class from all buttons within the question
     const buttons = event.target.closest('ul').querySelectorAll('button');
     buttons.forEach((btn) => btn.classList.remove('correctAnswer'));
 
-    // Apply effects to the selected answer
     event.target.parentNode.classList.add('shake-left-right');
     event.target.classList.add('correctAnswer');
-
-    // Remove shake effect after animation completes (adjust timing as needed)
     setTimeout(() => {
       event.target.parentNode.classList.remove('shake-left-right');
     }, 600);
@@ -88,8 +83,14 @@ const QuizQuestionCreator = () => {
         </div>
       </div>
 
-      {questions.map((question, i) => (
-        <div key={i} className="mb-6">
+      {createdQuestions.map((question, i) => (
+        <div key={i} className="mb-6 relative">
+          <button
+            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-600 m-2"
+            onClick={() => removeCreatedQuestion(i)}
+          >
+            ✕
+          </button>
           <p className='rounded-md h-32 md:h-[6.5rem] flex justify-center items-center bg-blue-500 px-5 md:px-10 py-6 text-white text-xl font-semibold mb-3'>
             {question.question}
           </p>

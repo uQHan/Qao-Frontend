@@ -53,6 +53,36 @@ body {
 	}
 }
 
+/* Background Scroll ============================ */
+@keyframes verticalScrollBackground {
+	from {
+		 background-position: 0 0;
+	}
+	to {
+		 background-position: 0 200%;
+	}
+}
+@keyframes horizontalScrollBackground {
+	0% {
+		background-position: 0 0;
+  }
+  100% {
+		background-position: 200% 0;
+  }
+}
+
+.bg-vertical-scroll-animation {
+	background-repeat: repeat;
+	background-size: cover;
+	animation: verticalScrollBackground 30s linear infinite;
+}
+
+.bg-horizontal-scroll-animation {
+	background-repeat: repeat;
+	background-size: cover;
+	animation: horizontalScrollBackground 30s linear infinite;
+}
+
 /* Slides ============================ */
 .slide-left {
 	transform: translateX(-100%);

@@ -13,8 +13,8 @@ import { useBoundStore } from '@/store/useBoundStore'
 import CreateHeader from '@/components/Create/CreateHeader'
 import CreateInfo from '@/components/Create/CreateInfo'
 
-export default function Play () {
-	const { loading, error, getQuestions, setQueries } = useBoundStore(state => state)
+export default function Play() {
+	const { createdQuestions, createdWildcards, createdCategories, cleanCreateQuestions, cleanCreateWildcards, cleanCreateCategories } = useBoundStore(state => state)
 	const router = useRouter()
 
 	// useEffect(() => {
@@ -26,23 +26,24 @@ export default function Play () {
 	// 	}
 	// }, [router.isReady])
 
-	useEffect(() => { window.onbeforeunload = () => 'Are you sure you want to leave?' }, [])
+	useEffect(() => {
+		window.onbeforeunload = () => 'Are you sure you want to leave?'
+		return () => cleanCreateQuestions() // Clean up createdQuestions on component unmount
+	}, [])
 
 	return (
 		<>
 			<Head><title>Quizi | Create</title></Head>
-			{loading && <PageLoading />}
-			{error[0] && <PageError />}
-			{!loading && !error[0] && <>
-				<CreateHeader />
-				<CreateInfo />
-				<CreateQuestions />
-				<Footer alert={true} />
-				<style jsx global>
-					{`
+
+			<CreateHeader />
+			<CreateInfo />
+			<CreateQuestions />
+			<Footer alert={true} />
+			<style jsx global>
+				{`
 					body {
-						background: url(play_bg.webp) center;
-						background-size: 100% 100%;
+						background: url(bg-profile3.svg) center;
+						.background-horizontal-scroll-animation;
 					}
 
 					@media (max-width: 1030px) {
@@ -51,9 +52,7 @@ export default function Play () {
 						}
 					}
 				`}
-				</style>
-			</>
-			}
+			</style>
 		</>
 	)
 }
