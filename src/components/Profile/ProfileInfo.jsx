@@ -11,6 +11,9 @@ export default function ProfileInfo({ user, logout }) {
 				<p><strong>Username:</strong> {user?.username}</p>
 				<p><strong>Email:</strong> {user?.email}</p>
 				<p><strong>Joined:</strong> {new Date(user?.joined).toLocaleDateString()}</p>
+				<p><strong>Test Completed:</strong></p>
+				<p><strong>Average Score (%):</strong></p>
+				
 			</div>
 			<button className="btn-primary mt-4" onClick={logout}>Logout</button>
 		</article>

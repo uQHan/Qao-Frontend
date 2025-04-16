@@ -28,7 +28,7 @@ export default function Profile() {
 				<main className='bg-[url("/bg-profile3.svg")] bg-vertical-scroll-animation max-w-6xl relative mx-auto w-full min-h-[25rem] flex flex-col justify-between items-center px-5 md:px-10 py-20 lg:col-start-2 lg:row-start-1 lg:row-end-2 text-center text-white'>
 					<ProfileInfo user={user} logout={handleLogout} />
 				</main>
-				<section className='max-w-6xl bg-[url("/bg-gamemodes.svg")] bg-horizontal-scroll-animation px-8 pb-6 flex flex-col justify-center text-slate-900 lg:col-start-1 lg:col-end-2'>
+				<section className='max-w-6xl bg-[url("/bg-gamemodes.svg")] bg-horizontal-scroll-animation px-4 lg:px-8 pb-6 flex flex-col justify-center text-slate-900 lg:col-start-1 lg:col-end-2'>
 					<div className='flex flex-col gap-3'>
 						<QuizHistory quizHistory={quizHistory} />
 					</div>

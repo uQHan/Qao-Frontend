@@ -17,6 +17,18 @@ export default function QuizHistory({ quizHistory }) {
          date: new Date().toISOString(),
          correctAnswers: 7,
          totalQuestions: 10
+      },
+      {
+         title: "History Quiz",
+         date: new Date().toISOString(),
+         correctAnswers: 2,
+         totalQuestions: 10
+      },
+      {
+         title: "History Quiz",
+         date: new Date().toISOString(),
+         correctAnswers: 5,
+         totalQuestions: 10
       }
    ];
 
@@ -25,12 +37,18 @@ export default function QuizHistory({ quizHistory }) {
    return (
       <aside className='bg-white rounded-md lg:shadow-md w-full lg:max-w-6xl mx-auto lg:col-start-1 lg:col-end-2 px-8 py-6 mt-10 flex flex-col justify-center text-slate-900'>
          <h2 className='text-2xl mb-4 font-medium mt-4 lg:mt-0'>Quiz History</h2>
+         <div className='overflow-y-auto max-h-[80vh] lg:max-h-[75vh]'>
          <ul className='space-y-3'>
             {historyToDisplay.map((quiz, index) => {
                const percentage = ((quiz.correctAnswers / quiz.totalQuestions) * 100).toFixed(1);
+               const getColorClass = (percentage) => {
+                  if (percentage < 33.33) return 'text-red-500'; // 0-1/3
+                  if (percentage < 66.67) return 'text-orange-400'; // 1/3-2/3
+                  return 'text-green-500'; // 2/3+
+               };
                return (
                   <li key={index} className='p-3 border rounded-md flex items-center gap-4'>
-                     <div className='relative w-16 h-16'>
+                     <div className='relative w-24 h-24'>
                         <svg className='w-full h-full' viewBox="0 0 36 36">
                            <path
                               className="text-gray-300"
@@ -42,7 +60,7 @@ export default function QuizHistory({ quizHistory }) {
                               strokeWidth="2"
                            />
                            <path
-                              className="text-blue-500"
+                              className={getColorClass(percentage)}
                               d="M18 2.0845
                                  a 15.9155 15.9155 0 0 1 0 31.831
                                  a 15.9155 15.9155 0 0 1 0 -31.831"
@@ -70,6 +88,7 @@ export default function QuizHistory({ quizHistory }) {
                </li>
             )}
          </ul>
+         </div>
       </aside>
    )
 }
