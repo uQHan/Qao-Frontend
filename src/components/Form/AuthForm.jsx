@@ -6,13 +6,18 @@ import { useBoundStore } from '@/store/useBoundStore'
 import PageLoading from '@/components/PageLoading'
 
 export default function AuthForm() {
-	const { dest, login, authloading } = useBoundStore(state => state)
+	const { dest, setDest, login, authloading } = useBoundStore(state => state)
 	const dialog = useRef(null)
 	const router = useRouter()
 
 	async function handleSubmit(e) {
 		e.preventDefault()
-		await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(router.push('/' + dest))
+		if (dest && dest !== 'create') {
+			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(router.push('/' + dest))
+		} else if (dest === 'create') {
+			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(document.getElementById('createQuizRoomDialog')?.showModal())
+		}
+		setDest(null)
 	}
 
 	function clickOutsideDialog(e) {

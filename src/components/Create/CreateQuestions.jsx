@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FiPlus, FiTrash2 } from 'react-icons/fi';
+import { FiPlus } from 'react-icons/fi';
 import { IoMdSave } from 'react-icons/io';
 import { FaRegQuestionCircle } from 'react-icons/fa';
 import { AiFillBulb } from "react-icons/ai";
@@ -8,13 +8,19 @@ import { useBoundStore } from '@/store/useBoundStore';
 
 const QuizQuestionCreator = () => {
   const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '' });
-  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, addCreatedCategory, createdCategories, removeCreatedCategory } = useBoundStore(state => (state));
+  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions } = useBoundStore(state => state);
 
   const addQuestion = () => {
-    if (currentQuestion.question.trim()) {
-      addCreatedQuestion(currentQuestion);
-      setCurrentQuestion({ question: '', answers: ['', '', '', ''], correct: '' });
+    if (!currentQuestion.question.trim()) {
+      alert("Please enter a question.");
+      return;
     }
+    if (!currentQuestion.correct) {
+      alert("Please select the correct answer.");
+      return;
+    }
+    addCreatedQuestion(currentQuestion);
+    setCurrentQuestion({ question: '', answers: ['', '', '', ''], correct: '' });
   };
 
   const updateQuestion = (value) => {
@@ -27,8 +33,17 @@ const QuizQuestionCreator = () => {
     setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
   };
 
-  const selectCorrectAnswer = (qIndex, aIndex, event) => {
-    const updatedQuestions = createdQuestions.map((q, i) =>
+  const selectCorrectAnswer = (aIndex) => {
+    const selectedAnswer = currentQuestion.answers[aIndex];
+    if (!selectedAnswer.trim()) {
+      alert("Please provide an answer before selecting it as correct.");
+      return;
+    }
+    setCurrentQuestion({ ...currentQuestion, correct: selectedAnswer });
+  };
+
+  const selectListAnswer = (qIndex, aIndex, event) => {
+    const updatedQuestion = createdQuestions.map((q, i) =>
       i === qIndex ? { ...q, correct: q.answers[aIndex] } : q
     );
 
@@ -41,7 +56,6 @@ const QuizQuestionCreator = () => {
       event.target.parentNode.classList.remove('shake-left-right');
     }, 600);
   };
-
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
@@ -59,14 +73,23 @@ const QuizQuestionCreator = () => {
         />
         <div className="mt-2 space-y-2">
           {currentQuestion.answers.map((opt, oIndex) => (
-            <input
-              key={oIndex}
-              type="text"
-              placeholder={`Answer ${['A', 'B', 'C', 'D'][oIndex]}`}
-              value={opt}
-              onChange={(e) => updateOption(oIndex, e.target.value)}
-              className="w-full p-2 border rounded-md focus:ring"
-            />
+            <div key={oIndex} className="flex items-center space-x-2">
+              <input
+                type="text"
+                placeholder={`Answer ${['A', 'B', 'C', 'D'][oIndex]}`}
+                value={opt}
+                onChange={(e) => updateOption(oIndex, e.target.value)}
+                className="w-full p-2 border rounded-md focus:ring"
+              />
+              <button
+                type="button"
+                className={`p-2 rounded-full ${currentQuestion.correct === opt && opt.trim() !== '' ? 'bg-green-500 text-white' : 'bg-gray-200'
+                  }`}
+                onClick={() => selectCorrectAnswer(oIndex)}
+              >
+                ✓
+              </button>
+            </div>
           ))}
         </div>
 
@@ -74,7 +97,7 @@ const QuizQuestionCreator = () => {
           <button onClick={addQuestion} className="btn-primary flex items-center space-x-2">
             <FiPlus /> <span>Add Question</span>
           </button>
-          <button className="btn-primary flex items-center space-x-2">
+          <button onClick={saveQuestions} className="btn-primary flex items-center space-x-2">
             <IoMdSave /> <span>Save Quiz</span>
           </button>
           <button className="btn-primary flex items-center space-x-2">
@@ -97,8 +120,8 @@ const QuizQuestionCreator = () => {
           <ul className={`md:columns-2 mt-4 ${'answers-' + (i + 1)}`}>
             {question.answers.map((answer, j) => (
               <li key={j + answer} className="relative">
-                <button className={`${'answer-' + (j + 1)} peer btn-primary w-full shadow-sm pl-12 py-3 px-5 rounded mb-6 ${answer.length > 24 ? 'text-sm' : ''}`}
-                  onClick={(e) => selectCorrectAnswer(i, j, e)}> {answer || '---'} </button>
+                <button className={`${'answer-' + (j + 1)} peer btn-primary w-full shadow-sm pl-12 py-3 px-5 rounded mb-6 ${answer.length > 24 ? 'text-sm' : ''} ${answer === question.correct ? 'correctAnswer' : ''}`}
+                  onClick={(e) => selectListAnswer(i, j, e)}> {answer || '---'} </button>
                 <Image className='absolute pointer-events-none left-2 top-1 peer-disabled:translate-y-0 peer-hover:translate-y-[0.25em] peer-active:translate-y-[0.75em] transition-transform z-20 invert' src={`/letters/letter-${['a', 'b', 'c', 'd'][j]}.svg`} width={40} height={40} alt={`Question ${j + 1}]}`} />
               </li>
             ))}

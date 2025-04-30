@@ -3,6 +3,7 @@ import { Rubik } from '@next/font/google'
 import Head from 'next/head'
 import AuthForm from './../components/Form/AuthForm';
 import PlayForm from '@/components/Form/PlayForm';
+import CreateQuizRoomForm from '@/components/Form/CreateQuizRoomForm';
 const rubik = Rubik({ subsets: ['latin'] })
 
 export default function App ({ Component, pageProps }) {
@@ -14,6 +15,7 @@ export default function App ({ Component, pageProps }) {
 			<Component {...pageProps} />
 			<PlayForm />
 			<AuthForm />
+			<CreateQuizRoomForm />
 			<style jsx global>{`
         html {
           font-family: ${rubik.style.fontFamily};

@@ -1,5 +1,6 @@
 export const useAuthStore = (set, get) => ({
    user: null,
+   hostId: null,
    authloading: false,
    dest: null,
    setDest: (dest) => {
