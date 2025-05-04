@@ -9,7 +9,7 @@ import categoriesJSON from '@/assets/categories.json'
 import { useBoundStore } from '@/store/useBoundStore'
 import JoinGameForm from './JoinGameForm'
 
-export default function PlayForm () {
+export default function PlayForm() {
 	const { getQuestions, cleanQuestions, queries, setQueries, cleanWildCards } = useBoundStore(state => state)
 	const [nowQueries, setNowQueries] = useState(queries)
 	const router = useRouter()
@@ -23,7 +23,7 @@ export default function PlayForm () {
 		}
 	}, [router.isReady])
 
-	function handleInputs (e) {
+	function handleInputs(e) {
 		if (e.target.name === 'infinitymode' || e.target.name === 'timemode') {
 			e.target.checked ? playSound('pop-up-on') : playSound('pop-up-off')
 			return setNowQueries({ ...nowQueries, [e.target.name]: e.target.name === 'infinitymode' ? !e.target.checked : e.target.checked })
@@ -38,34 +38,34 @@ export default function PlayForm () {
 		setNowQueries({ ...nowQueries, [e.target.name]: e.target.value })
 	}
 
-	function handleSubmit (e) {
-		if (e.target.name === 'newgame'){
+	function handleSubmit(e) {
+		if (e.target.name === 'newgame') {
 			e.preventDefault()
-		cleanQuestions()
-		cleanWildCards()
+			cleanQuestions()
+			cleanWildCards()
 
-		const query = Object.keys(nowQueries).map(key => `${key}=${nowQueries[key]}`).join('&')
-		setQueries(queryValidator(nowQueries))
-		router.push({ pathname: '/play', query })
+			const query = Object.keys(nowQueries).map(key => `${key}=${nowQueries[key]}`).join('&')
+			setQueries(queryValidator(nowQueries))
+			router.push({ pathname: '/play', query })
 
-		const cate = nowQueries.categories.map(cat => categoriesJSON.find(c => c.id === cat).name)
-		if (router.pathname === '/play') getQuestions(cate, nowQueries.infinitymode ? 5 : nowQueries.questions)
+			const cate = nowQueries.categories.map(cat => categoriesJSON.find(c => c.id === cat).name)
+			if (router.pathname === '/play') getQuestions(cate, nowQueries.infinitymode ? 5 : nowQueries.questions)
 
-		closeDialog()
+			closeDialog()
 		}
 	}
 
-	function clickOutsideDialog (e) {
+	function clickOutsideDialog(e) {
 		const rect = dialog.current.getBoundingClientRect()
 		if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
 			closeDialog()
 		}
 	}
 
-	function closeDialog () {
+	function closeDialog() {
 		playSound('pop-down')
 		dialog.current.classList.add('hide')
-		function handleAnimationEnd () {
+		function handleAnimationEnd() {
 			dialog.current.classList.remove('hide')
 			dialog.current.close()
 			dialog.current.removeEventListener('animationend', handleAnimationEnd)
@@ -89,13 +89,7 @@ export default function PlayForm () {
 
 			<div className="my-6 border-t border-gray-300 w-full"></div>
 
-			<form onSubmit={(e) => e.preventDefault()}>
-				<div className='flex'>
-					<JoinGameForm handleInputs={handleInputs} nowQueries={nowQueries} />
-				</div>
-
-				<button type='submit' className='btn-primary uppercase py-3 px-6 w-full tracking-widest' onClick={(e) => handleSubmit(e)}>Join Game</button>
-			</form>
+			<JoinGameForm handleInputs={handleInputs} nowQueries={nowQueries} />
 		</dialog >
 	)
 }

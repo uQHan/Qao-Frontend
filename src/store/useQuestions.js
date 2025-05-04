@@ -1,4 +1,5 @@
 import getQuestions from '@/helpers/getQuestions'
+import getQuestionsById from '@/helpers/getQuestionsById'
 
 export const useQuestionsStore = (set, get) => ({
 	questions: [],
@@ -14,6 +15,21 @@ export const useQuestionsStore = (set, get) => ({
 			.then(data => set({ questions: data }))
 			.catch(err => set({ error: [true, err] }))
 			.finally(() => infinity ? set({ loadingInfinity: false }) : set({ loading: false }))
+	},
+	getQuestionsById: (id, name) => {
+		getQuestionsById(id, name)
+			.then(data => {
+				set(state => {
+					const questions = [...state.questions]
+					const questionIndex = questions.findIndex(q => q.id === id)
+					if (questionIndex !== -1) {
+						questions[questionIndex] = { ...questions[questionIndex], ...data }
+					}
+					return { questions }
+				})
+			})
+			.catch(err => set({ error: [true, err] }))
+			.finally(() => set({ loading: false }))
 	},
 	setCurrentQuestion: (number) => set({ currentQuestion: number }),
 	setUserAnswer: (question, answer) => {
