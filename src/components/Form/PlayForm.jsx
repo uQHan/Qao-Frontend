@@ -12,6 +12,7 @@ import JoinGameForm from './JoinGameForm'
 export default function PlayForm() {
 	const { getQuestions, cleanQuestions, queries, setQueries, cleanWildCards } = useBoundStore(state => state)
 	const [nowQueries, setNowQueries] = useState(queries)
+	const [joinQuery, setJoinQuery] = useState('')
 	const router = useRouter()
 	const dialog = useRef(null)
 
@@ -89,7 +90,7 @@ export default function PlayForm() {
 
 			<div className="my-6 border-t border-gray-300 w-full"></div>
 
-			<JoinGameForm handleInputs={handleInputs} nowQueries={nowQueries} />
+			<JoinGameForm handleInputs={handleInputs} joinQuery={joinQuery} />
 		</dialog >
 	)
 }

@@ -27,9 +27,7 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
-      console.log('Fetched questions:', data); // Log the fetched questions for debugging
-      const sanitizedData = data.map(({ correct_answer, ...rest }) => rest);
-      console.log('Sanitized questions:', sanitizedData); // Log the sanitized questions for debugging
+      const sanitizedData = data.map(({ correctAnswer, ...rest }) => rest);
       return res.status(200).json(sanitizedData); // Return the fetched questions
    } catch (error) {
       console.error('Error fetching questions:', error);

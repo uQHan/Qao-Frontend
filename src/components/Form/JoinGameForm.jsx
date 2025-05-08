@@ -4,7 +4,8 @@ import playSound from '@/helpers/playSound'
 import { getQuestionsById } from '@/helpers/getQuestionsById';
 import { useBoundStore } from '@/store/useBoundStore';
 
-export default function JoinGameForm() {
+export default function JoinGameForm({joinQuery}) {
+   const { queries } = useBoundStore(state => state)
    const { getQuestionsById } = useBoundStore(state => state)
 
    const dialog = useRef(null)
