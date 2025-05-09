@@ -1,3 +1,5 @@
+import CryptoJS from 'crypto-js';
+
 export default async function handler(req, res) {
    if (req.method !== 'POST') {
       return res.status(405).json({ message: 'Only POST requests allowed', statusCode: 405 });
@@ -27,8 +29,15 @@ export default async function handler(req, res) {
       }
 
       const data = await response.json();
-      const sanitizedData = data.map(({ correctAnswer, ...rest }) => rest);
-      return res.status(200).json(sanitizedData); // Return the fetched questions
+
+      // Encrypt the correctAnswer field in each question
+      const encryptionKey = process.env.ANSWER_ENCRYPTION_KEY; // Ensure this is set in your .env file
+      const encryptedData = data.map(question => ({
+         ...question,
+         correctAnswer: CryptoJS.AES.encrypt(question.correctAnswer, encryptionKey).toString(),
+      }));
+
+      return res.status(200).json(encryptedData); // Return the data with encrypted correctAnswer
    } catch (error) {
       console.error('Error fetching questions:', error);
       return res.status(500).json({
