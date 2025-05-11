@@ -94,6 +94,24 @@ body {
 	opacity: 0;
 	pointer-events: none;
 }
+.slide-up {
+	transform: translateY(-100%);
+	opacity: 0;
+	pointer-events: none;
+}
+.slide-down {
+	transform: translateY(100%);
+	opacity: 0;
+	pointer-events: none;
+}
+.expandable {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease-out;
+}
+.expandable.expanded {
+    max-height: 200px;
+}
 
 /* Loader ============================ */
 .loader {

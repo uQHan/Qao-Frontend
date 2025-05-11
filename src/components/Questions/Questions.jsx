@@ -8,15 +8,20 @@ import categories from '@/assets/categories.json'
 import playSound from '@/helpers/playSound'
 import { useBoundStore } from '@/store/useBoundStore'
 
-export default function Questions () {
+export default function Questions() {
 	const { questions, loading, loadingInfinity, currentQuestion, setCurrentQuestion, setUserAnswer, win, score, setWin, setScore, wildCards, useLivesCard, queries, getQuestions } = useBoundStore(state => state)
 	const [time, setTime] = useState(Number(queries.time))
 
 	useEffect(() => {
-		const color = categories.find(cat => cat.name.toLowerCase() === questions[currentQuestion - 1]?.topic.toLowerCase())?.color
+		var color = null
+		if (!queries.quizmode) {
+			color = categories.find(cat => cat.name.toLowerCase() === questions[currentQuestion - 1]?.topic.toLowerCase())?.color
+		} else {
+			color = "#307de7"
+		}
 		color && (document.body.style.backgroundColor = color)
 
-		function shortcuts (e) {
+		function shortcuts(e) {
 			if (!queries.infinitymode) {
 				if (e.key === 'ArrowLeft' && currentQuestion > 1) changueCurrent(currentQuestion - 1)
 				if (e.key === 'ArrowRight' && currentQuestion < score) changueCurrent(currentQuestion + 1)
@@ -39,7 +44,7 @@ export default function Questions () {
 	}, [queries.timemode, win, loading, loadingInfinity])
 
 	useEffect(() => {
-		if (win !== undefined || time > 0) return
+		if (queries.quizmode || !queries.timemode || win !== undefined || time > 0) return
 
 		if (wildCards.lives < 1) {
 			clickCorrectAnswer()
@@ -65,7 +70,7 @@ export default function Questions () {
 		}
 	}, [time])
 
-	function getAnotherQuestions () {
+	function getAnotherQuestions() {
 		setTimeout(() => {
 			setTime(Number(queries.time))
 			changueCurrent(1)
@@ -75,7 +80,7 @@ export default function Questions () {
 		}, 1000)
 	}
 
-	function clickCorrectAnswer (addScore = false) {
+	function clickCorrectAnswer(addScore = false) {
 		if (addScore) {
 			setTimeout(() => {
 				setScore(score + 1)
@@ -94,7 +99,7 @@ export default function Questions () {
 		})
 	}
 
-	function changueCurrent (number) {
+	function changueCurrent(number) {
 		if (number > questions.lenght || number < 1) return
 		document.querySelectorAll('[id^="question-"]').forEach(question => {
 			question.classList.remove('slide-left', 'slide-right')

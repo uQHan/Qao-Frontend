@@ -13,12 +13,12 @@ import queryValidator from '@/helpers/gameConfig'
 import categories from '@/assets/categories.json'
 import { useBoundStore } from '@/store/useBoundStore'
 
-export default function Play () {
-	const { loading, error, getQuestions, setQueries } = useBoundStore(state => state)
+export default function Play() {
+	const { loading, error, getQuestions, setQueries, queries, questions } = useBoundStore(state => state)
 	const router = useRouter()
 
 	useEffect(() => {
-		if (router.isReady) {
+		if (router.isReady && !queries.quizmode) {
 			const validQuery = queryValidator(router.query)
 			const cate = validQuery.categories.map(cat => categories.find(c => c.id === cat).name)
 			setQueries(validQuery)

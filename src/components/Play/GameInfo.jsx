@@ -4,11 +4,19 @@ import categories from '@/assets/categories.json'
 import { useState } from 'react'
 import { useBoundStore } from '@/store/useBoundStore'
 
-export default function GameInfo () {
+export default function GameInfo() {
 	const { queries } = useBoundStore(state => state)
 	const [showInfo, setShowInfo] = useState(false)
 
-	const mode = queries.timemode && queries.infinitymode ? 'Time | Infinity' : !queries.timemode && !queries.infinitymode ? 'Classic' : queries.timemode ? 'Time' : 'Infinity'
+	const mode = queries.quizmode
+		? 'Quiz'
+		: queries.timemode && queries.infinitymode
+			? 'Time | Infinity'
+			: !queries.timemode && !queries.infinitymode
+				? 'Classic'
+				: queries.timemode
+					? 'Time'
+					: 'Infinity';
 
 	return (
 		<>

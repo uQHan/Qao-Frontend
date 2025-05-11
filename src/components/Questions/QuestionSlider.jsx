@@ -2,12 +2,18 @@ import { useBoundStore } from '@/store/useBoundStore'
 import playSound from '@/helpers/playSound'
 import starIcon from '@/assets/star.svg'
 import Image from 'next/image'
+import checkAnswer from '@/helpers/checkAnswer'
 
-export default function QuestionSlider ({ changueCurrent, setTime, getAnotherQuestions }) {
-	const { questions, queries, loadingInfinity, setUserAnswer, error, useLivesCard, setWin, wildCards, currentQuestion, setScore, win, score } = useBoundStore(state => state)
+export default function QuestionSlider({ changueCurrent, setTime, getAnotherQuestions }) {
+	const { questions, queries, loadingInfinity, setUserAnswer, setAnswer, error, useLivesCard, setWin, wildCards, currentQuestion, setScore, win, score } = useBoundStore(state => state)
 
-	function validateAnswer (e) {
-		const correct = e.target.textContent === questions[currentQuestion - 1].correctAnswer
+	async function validateAnswer(e) {
+		var correct = null;
+		if (!queries.quizmode) {
+			correct = e.target.textContent === questions[currentQuestion - 1].correctAnswer
+		} else {
+			correct = await checkAnswer(e.target.textContent, questions[currentQuestion - 1].correctAnswer)
+		}
 
 		e.target.parentNode.classList.add(correct ? 'shake-left-right' : 'vibrate')
 		e.target.classList.add(correct ? 'correctAnswer' : 'wrongAnswer')
@@ -22,6 +28,7 @@ export default function QuestionSlider ({ changueCurrent, setTime, getAnotherQue
 
 		playSound(correct ? 'correct_answer' : 'wrong_answer', 0.3)
 		if (!queries.infinitymode) setUserAnswer(currentQuestion - 1, correct ? 1 : -1)
+		setAnswer(currentQuestion - 1, e.target.textContent)
 
 		if (queries.infinitymode) {
 			if (correct) {
