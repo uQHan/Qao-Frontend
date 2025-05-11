@@ -1,8 +1,10 @@
 import getQuestions from '@/helpers/getQuestions'
-import getQuestionsById from '@/helpers/getQuestionsById'
+import getQuestionsByQuizId from '@/helpers/getQuestionsByQuizId'
+import takeQuiz from '@/helpers/takeQuiz'
 
 export const useQuestionsStore = (set, get) => ({
 	questions: [],
+	takeId: null,
 	loading: false,
 	loadingInfinity: false,
 	error: [false, ''],
@@ -16,20 +18,18 @@ export const useQuestionsStore = (set, get) => ({
 			.catch(err => set({ error: [true, err] }))
 			.finally(() => infinity ? set({ loadingInfinity: false }) : set({ loading: false }))
 	},
-	getQuestionsById: (id, name) => {
-		getQuestionsById(id, name)
-			.then(data => {
-				set(state => {
-					const questions = [...state.questions]
-					const questionIndex = questions.findIndex(q => q.id === id)
-					if (questionIndex !== -1) {
-						questions[questionIndex] = { ...questions[questionIndex], ...data }
-					}
-					return { questions }
-				})
-			})
+	getQuestionsByQuizId: (id, name) => {
+		getQuestionsByQuizId(id, name)
+			.then(data => set({ questions: data }))
 			.catch(err => set({ error: [true, err] }))
 			.finally(() => set({ loading: false }))
+	},
+	takeQuiz: async (id, name) => {
+		await takeQuiz(id, name)
+			.then(data => set({ questions: data.questions, takeId: data.takeId }))
+			.catch(err => set({ error: [true, err] }))
+			.finally(() => set({ loading: false }))
+		return get().questions
 	},
 	setCurrentQuestion: (number) => set({ currentQuestion: number }),
 	setUserAnswer: (question, answer) => {
@@ -37,6 +37,21 @@ export const useQuestionsStore = (set, get) => ({
 		set(state => {
 			const questions = [...state.questions]
 			questions[question].userAnswer = answer
+			return { questions }
+		})
+	},
+	setDecryptedAnswer: (question, answer) => {
+		if (get().queries.infinitymode) return
+		set(state => {
+			const questions = [...state.questions]
+			questions[question].correctAnswer = answer
+			return { questions }
+		})
+	},
+	setAnswer: (question, answer) => {
+		set(state => {
+			const questions = [...state.questions]
+			questions[question].answer = answer
 			return { questions }
 		})
 	},

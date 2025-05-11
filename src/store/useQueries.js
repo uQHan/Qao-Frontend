@@ -2,5 +2,6 @@ import { defaultQuery } from '@/helpers/gameConfig'
 
 export const useQueriesStore = (set) => ({
 	queries: defaultQuery,
-	setQueries: (queries) => set({ queries })
+	setQueries: (queries) => set({ queries }),
+	cleanQueries: () => set({ queries: defaultQuery })
 })

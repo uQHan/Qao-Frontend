@@ -7,8 +7,9 @@ const DEFAULT_TIME = 20
 const DEFAULT_QUESTIONS = 5
 const INFINITY_MODE = false
 const TIME_MODE = false
+const QUIZ_MODE = false
 
-export default function queryValidator (query) {
+export default function queryValidator(query) {
 	const { questions, time, infinitymode, timemode, categories } = query
 	const urlQueries = {}
 
@@ -44,6 +45,41 @@ export default function queryValidator (query) {
 	return urlQueries
 }
 
+export function quizQueryValidator(query) {
+	const { quizId, name, categories, questions } = query;
+	const validatedQuery = {};
+
+	if (questions && questions.length > 0) {
+		validatedQuery.questions = questions.length
+	} else validatedQuery.questions = DEFAULT_QUESTIONS
+
+	if (quizId && typeof quizId === 'string' && quizId.trim().length > 0) {
+		validatedQuery.quizId = quizId.trim();
+	} else {
+		throw new Error('Invalid or missing quizId');
+	}
+
+	if (name && typeof name === 'string' && name.trim().length > 0) {
+		validatedQuery.name = name.trim();
+	} else {
+		throw new Error('Invalid or missing name');
+	}
+
+	if (categories) {
+		const categoriesArray = typeof categories === 'string' ? categories.split(',') : categories;
+		const filteredCategories = categoriesArray.filter(category =>
+			categoriesJSON.map(cat => cat.id).includes(category)
+		);
+		validatedQuery.categories = filteredCategories.length > 0
+			? filteredCategories
+			: categoriesJSON.map(category => category.id);
+	} else {
+		validatedQuery.categories = categoriesJSON.map(category => category.id);
+	}
+
+	return validatedQuery;
+}
+
 export const defaultQuestions = {
 	minQuestions: MIN_QUESTIONS,
 	maxQuestions: MAX_QUESTIONS
@@ -54,5 +90,8 @@ export const defaultQuery = {
 	time: DEFAULT_TIME,
 	infinitymode: INFINITY_MODE,
 	timemode: TIME_MODE,
+	quizmode: QUIZ_MODE,
+	quizId: '',
+	name: '',
 	categories: categoriesJSON.map(category => category.id)
 }
