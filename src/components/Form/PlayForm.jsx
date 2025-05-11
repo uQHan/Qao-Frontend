@@ -4,15 +4,15 @@ import { useRouter } from 'next/router'
 import NewGameForm from './NewGameForm'
 import { IoCloseSharp } from 'react-icons/io5'
 import playSound from '@/helpers/playSound'
-import queryValidator from '@/helpers/gameConfig'
+import queryValidator, { quizQueryValidator } from '@/helpers/gameConfig'
 import categoriesJSON from '@/assets/categories.json'
 import { useBoundStore } from '@/store/useBoundStore'
 import JoinGameForm from './JoinGameForm'
 
 export default function PlayForm() {
-	const { getQuestions, cleanQuestions, queries, setQueries, cleanWildCards } = useBoundStore(state => state)
+	const { getQuestions, cleanQuestions, queries, setQueries, cleanWildCards, takeQuiz, error } = useBoundStore(state => state)
 	const [nowQueries, setNowQueries] = useState(queries)
-	const [joinQuery, setJoinQuery] = useState('')
+	const [joinQuery, setJoinQuery] = useState(queries)
 	const router = useRouter()
 	const dialog = useRef(null)
 
@@ -20,9 +20,19 @@ export default function PlayForm() {
 
 	useEffect(() => {
 		if (router.isReady && router.pathname === '/play') {
-			setQueries(queryValidator(router.query))
+			if (!queries.quizmode) {
+				setQueries(queryValidator(router.query));
+			}
 		}
-	}, [router.isReady])
+	}, [router.isReady]);
+
+	useEffect(() => {
+		if (error[0]) {
+			console.error('Error joining the game:', error[1]);
+			alert('Failed to join the game. Returning to the main page.');
+			router.push('/');
+		}
+	}, [error]);
 
 	function handleInputs(e) {
 		if (e.target.name === 'infinitymode' || e.target.name === 'timemode') {
@@ -39,13 +49,27 @@ export default function PlayForm() {
 		setNowQueries({ ...nowQueries, [e.target.name]: e.target.value })
 	}
 
-	function handleSubmit(e) {
+	function handleJoinInputs(e) {
+		const { name, value } = e.target;
+
+		playSound('pop')
+
+		setJoinQuery(prevState => ({
+			...prevState,
+			[name]: value.trim(),
+		}));
+	}
+
+	async function handleSubmit(e) {
 		if (e.target.name === 'newgame') {
 			e.preventDefault()
 			cleanQuestions()
 			cleanWildCards()
 
-			const query = Object.keys(nowQueries).map(key => `${key}=${nowQueries[key]}`).join('&')
+			const query = Object.keys(nowQueries)
+				.filter(key => !['quizId', 'name'].includes(key)) // Exclude unwanted keys
+				.map(key => `${key}=${nowQueries[key]}`)
+				.join('&'); 
 			setQueries(queryValidator(nowQueries))
 			router.push({ pathname: '/play', query })
 
@@ -53,6 +77,22 @@ export default function PlayForm() {
 			if (router.pathname === '/play') getQuestions(cate, nowQueries.infinitymode ? 5 : nowQueries.questions)
 
 			closeDialog()
+		} else if (e.target.name === 'joingame') {
+			e.preventDefault()
+			cleanQuestions()
+			cleanWildCards()
+
+			const questions = await takeQuiz(joinQuery.quizId, joinQuery.name);
+
+			const validatedQuery = { ...quizQueryValidator(joinQuery), quizmode: true, questions: questions.length };
+			setQueries(validatedQuery);
+
+			const query = Object.keys(validatedQuery).map(key => `${key}=${validatedQuery[key]}`).join('&');
+
+			if (!error[0]) {
+				router.push({ pathname: '/play', query });
+				closeDialog();
+			}
 		}
 	}
 
@@ -89,8 +129,13 @@ export default function PlayForm() {
 			</form>
 
 			<div className="my-6 border-t border-gray-300 w-full"></div>
+			<form onSubmit={handleSubmit}>
+				<div className='flex flex-col gap-4' >
+					<JoinGameForm handleInputs={handleJoinInputs} />
+				</div>
+				<button type='submit' className='btn-primary uppercase py-3 px-6 w-full tracking-widest mt-4' name='joingame' onClick={(e) => handleSubmit(e)}>Join game</button>
+			</form>
 
-			<JoinGameForm handleInputs={handleInputs} joinQuery={joinQuery} />
 		</dialog >
 	)
 }
