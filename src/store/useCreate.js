@@ -5,6 +5,7 @@ import categoriesJSON from '@/assets/categories.json';
 export const useCreateQuestionsStore = (set, get) => ({
 	createdQuestions: [],
 	createdCategories: [],
+	hasFile: false,
 	createdWildcards: { skip: 0, half: 0, lives: 0 },
 	quizId: null,
 	quizQuery: {

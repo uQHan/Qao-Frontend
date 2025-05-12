@@ -1,5 +1,23 @@
+const defaultUser = {
+   id: 1,
+   name: 'John Doe',
+   email: '',
+   role: 'user',
+   joined: '2023-01-01',
+   completedTests: 0,
+   averageScore: 0,
+   profilePicture: 'default-avatar.jpg',
+   quizzes: [],
+   friends: [],
+   notifications: [],
+   achievements: [],
+   settings: {
+      theme: 'light',
+   }
+}
+
 export const useAuthStore = (set, get) => ({
-   user: null,
+   user: defaultUser,
    hostId: null,
    authloading: false,
    dest: null,

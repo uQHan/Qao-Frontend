@@ -60,6 +60,24 @@ export default function AuthForm() {
 						</div>
 					</div>
 
+					<hr className='border-b border-gray-300 my-4' />
+
+					{/* Google OAuth Button */}
+					<div className="flex flex-col items-center gap-4 mb-4">
+						<button
+							type="button"
+							className="flex items-center justify-center gap-2 w-full py-3 px-6 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition-all"
+							onClick={() => alert('Google OAuth functionality coming soon!')}
+						>
+							<img
+								src="https://developers.google.com/identity/images/g-logo.png"
+								alt="Google Logo"
+								className="w-5 h-5"
+							/>
+							<span className="text-sm font-medium text-gray-700">Sign in with Google</span>
+						</button>
+					</div>
+
 					<button type='submit' className='btn-primary uppercase py-3 px-6 w-full tracking-widest'>Login</button>
 				</form>
 			</dialog>

@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
       if (!response.ok) {
          return res.status(response.status).json({
-            message: data.message || 'Failed to save questions',
+            message: data.message || 'Failed to save quỉzoom',
             statusCode: response.status,
          });
       }
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       return res.status(200).json(data);
    } 
    catch (err) {
-      console.error('Error in save-questions API:', err); // Log the full error object
+      console.error('Error in save-quiz API:', err); // Log the full error object
       return res.status(500).json({
          message: 'Internal Server Error',
          statusCode: 500,

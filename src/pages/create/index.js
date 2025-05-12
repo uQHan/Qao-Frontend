@@ -1,23 +1,25 @@
 import { useEffect } from 'react'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
-
-import PageLoading from '@/components/PageLoading'
-import PageError from '@/components/PageError'
 import Footer from '@/components/PageFooter'
 import CreateQuestions from '@/components/Create/CreateQuestions'
-
-import queryValidator from '@/helpers/gameConfig'
-import categories from '@/assets/categories.json'
 import { useBoundStore } from '@/store/useBoundStore'
 import CreateHeader from '@/components/Create/CreateHeader'
 import CreateInfo from '@/components/Create/CreateInfo'
 
 export default function Create() {
+	const { cleanCreateQuestions } = useBoundStore(state => state)
 	useEffect(() => {
 		window.onbeforeunload = () => 'Are you sure you want to leave?'
-		return () => cleanCreateQuestions() // Clean up createdQuestions on component unmount
+		return () => cleanCreateQuestions
 	}, [])
+
+	useEffect(() => {
+		document.body.classList.add('bg-vertical-scroll-animation');
+
+		return () => {
+			document.body.classList.remove('bg-vertical-scroll-animation');
+		};
+	}, []);
 
 	return (
 		<>
