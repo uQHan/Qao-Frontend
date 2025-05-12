@@ -9,11 +9,7 @@ import { useBoundStore } from '@/store/useBoundStore';
 export default function CreateQuizRoomForm() {
    const dialog = useRef(null);
    const router = useRouter();
-   const { quizQuery, setQuizQuery, saveQuiz } = useBoundStore(state => ({
-      quizQuery: state.quizQuery,
-      setQuizQuery: state.setQuizQuery,
-      saveQuiz: state.saveQuiz,
-   }));
+   const { quizQuery, setQuizQuery, saveQuiz } = useBoundStore(state => state);
 
    async function handleSubmit(e) {
       e.preventDefault();
@@ -188,7 +184,7 @@ export default function CreateQuizRoomForm() {
                               <input
                                  defaultChecked={quizQuery.categories.includes(category.id)}
                                  className="peer relative h-16 opacity-0 w-full md:h-full block cursor-pointer"
-                                 type="checkbox" name="categories" id={category.name} value={category.id} onClick={handleInputs}
+                                 type="checkbox" name="categories" value={category.id} onClick={handleInputs}
                                  disabled={quizQuery.categories.length === 1 && quizQuery.categories.includes(category.id)}
                               />
 

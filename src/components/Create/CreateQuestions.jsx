@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { IoMdSave } from 'react-icons/io';
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import { AiFillBulb } from "react-icons/ai";
+import { AiFillBulb, AiOutlineCaretUp } from "react-icons/ai";
 import Image from 'next/image';
 import { useBoundStore } from '@/store/useBoundStore';
+import fileToGenerate from '@/helpers/fileToGenerate';
 
 const QuizQuestionCreator = () => {
   const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '' });
-  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions } = useBoundStore(state => state);
+  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile } = useBoundStore(state => state);
 
   const addQuestion = () => {
     if (!currentQuestion.question.trim()) {
@@ -83,7 +84,7 @@ const QuizQuestionCreator = () => {
               />
               <button
                 type="button"
-                className={`p-2 rounded-full ${currentQuestion.correct === opt && opt.trim() !== '' ? 'bg-green-500 text-white' : 'bg-gray-200'
+                className={`p-2 rounded-md ${currentQuestion.correct === opt && opt.trim() !== '' ? 'bg-green-500 text-white' : 'bg-gray-200'
                   }`}
                 onClick={() => selectCorrectAnswer(oIndex)}
               >
@@ -93,16 +94,55 @@ const QuizQuestionCreator = () => {
           ))}
         </div>
 
-        <div className="flex space-x-4 my-4">
+        <div className="flex flex-wrap space-x-4 my-4">
           <button onClick={addQuestion} className="btn-primary flex items-center space-x-2">
             <FiPlus /> <span>Add Question</span>
           </button>
           <button onClick={saveQuestions} className="btn-primary flex items-center space-x-2">
             <IoMdSave /> <span>Save Quiz</span>
           </button>
-          <button className="btn-primary flex items-center space-x-2">
-            <AiFillBulb /> <span>Ai Addition</span>
+          <button
+            onClick={() => setCurrentQuestion({ question: '', answers: ['', '', '', ''], correct: '' })}
+            className="btn-primary flex items-center space-x-2"
+          >
+            <AiOutlineCaretUp /> <span>Clear</span>
           </button>
+          <div className="flex space-x-4">
+            <button
+              className="btn-primary flex items-center space-x-2"
+              onClick={() => document.getElementById('fileInput').click()} // Trigger file input
+            >
+              <AiFillBulb /> <span>Select File</span>
+            </button>
+
+            <input
+              type="file"
+              id="fileInput"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  try {
+                    const userId = useBoundStore.getState().user.id; // Get user ID from Zustand state
+                    await fileToGenerate(file, userId); // Send file to backend
+                    alert('File sent successfully!');
+                  } catch (error) {
+                    console.error('Error sending file:', error);
+                    alert('Failed to send file.');
+                  }
+                }
+              }}
+            />
+
+            <button
+              className={`btn-primary flex items-center space-x-2 
+                ${!hasFile ? 'bg-blue-400 before:bg-blue-500 text-white cursor-not-allowed' : ''
+                }`}
+              disabled={!hasFile} // Disable until a file has been sent
+            >
+              <AiFillBulb /> <span>Generate Question</span>
+            </button>
+          </div>
         </div>
       </div>
 

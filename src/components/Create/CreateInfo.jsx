@@ -86,15 +86,16 @@ const QuestionSidebar = ({ questions }) => {
 							/>
 
 							<Image
-								className={`p-2 rounded transition-all w-full h-full peer-checked:scale-90`}
+								className={`p-2 rounded transition-all w-full h-full peer-checked:scale-90 peer-checked:outline-2 peer-checked:outline-offset-2`}
 								src={`/categories-icons/${category.name.toLowerCase()}.svg`}
 								alt={category.name}
 								width={40}
 								height={40}
 								style={{
 									backgroundColor: selectedCategories.includes(category.id) ? category.color : 'transparent',
-									filter: selectedCategories.includes(category.id) ? 'invert(0)' : 'invert(1)', 
-									borderRadius: '8px'
+									filter: selectedCategories.includes(category.id) ? 'invert(0)' : 'invert(1)',
+									borderRadius: '8px',
+									outline: selectedCategories.includes(category.id) ? `2px solid ${category.color}` : 'none', 
 								}}
 							/>
 						</label>
