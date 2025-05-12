@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { IoMdSave } from 'react-icons/io';
 import { FaRegQuestionCircle } from 'react-icons/fa';
-import { AiFillBulb, AiOutlineCaretUp } from "react-icons/ai";
+import { AiFillBulb, AiFillFile, AiFillFolder, AiOutlineCaretUp } from "react-icons/ai";
 import Image from 'next/image';
 import { useBoundStore } from '@/store/useBoundStore';
 import fileToGenerate from '@/helpers/fileToGenerate';
@@ -112,7 +112,7 @@ const QuizQuestionCreator = () => {
               className="btn-primary flex items-center space-x-2"
               onClick={() => document.getElementById('fileInput').click()} // Trigger file input
             >
-              <AiFillBulb /> <span>Select File</span>
+              <AiFillFile /> <span>Select File</span>
             </button>
 
             <input
