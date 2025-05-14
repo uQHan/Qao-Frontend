@@ -1,6 +1,6 @@
 import getQuestions from '@/helpers/getQuestions'
-import getQuestionsByQuizId from '@/helpers/getQuestionsByQuizId'
-import takeQuiz from '@/helpers/takeQuiz'
+import getQuestionsByQuizId from '@/helpers/question/getQuestionsByQuizId'
+import takeQuiz from '@/helpers/take/takeQuiz'
 
 export const useQuestionsStore = (set, get) => ({
 	questions: [],
@@ -26,7 +26,11 @@ export const useQuestionsStore = (set, get) => ({
 	},
 	takeQuiz: async (id, name) => {
 		await takeQuiz(id, name)
-			.then(data => set({ questions: data.questions, takeId: data.takeId }))
+			.then(data => {
+				set({ questions: data.questions, takeId: data.takeId })
+				const { infiniteLifes } = get();
+				infiniteLifes();
+			})
 			.catch(err => set({ error: [true, err] }))
 			.finally(() => set({ loading: false }))
 		return get().questions

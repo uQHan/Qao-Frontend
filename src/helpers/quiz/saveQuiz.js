@@ -12,7 +12,7 @@ export default function saveQuiz(name, description, startTime, endTime) {
       updated_at: now,
    };
    console.log('Payload:', payload); // Log the payload to be sent to the API
-   const save = fetch('/api/save-quiz', {
+   const save = fetch('/api/quiz/save-quiz', {
       method: 'POST',
       headers: {
          'Content-Type': 'application/json'

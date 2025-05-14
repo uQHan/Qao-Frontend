@@ -1,5 +1,5 @@
-import saveQuestions from "@/helpers/saveQuestions";
-import saveQuiz from "@/helpers/saveQuiz";
+import saveQuestions from "@/helpers/quiz/saveQuestions";
+import saveQuiz from "@/helpers/quiz/saveQuiz";
 import categoriesJSON from '@/assets/categories.json';
 
 export const useCreateQuestionsStore = (set, get) => ({

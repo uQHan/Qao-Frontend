@@ -118,6 +118,7 @@ export default function Questions() {
 			</div>
 
 			{win !== undefined && <GameOver />}
+			{/* {!queries.quizmod && <Wildcards />} */}
 			<Wildcards />
 
 			{

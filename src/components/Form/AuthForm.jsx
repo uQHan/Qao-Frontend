@@ -1,41 +1,44 @@
-import { useRef } from 'react'
-import { useRouter } from 'next/router'
-import { IoCloseSharp } from 'react-icons/io5'
-import playSound from '@/helpers/playSound'
-import { useBoundStore } from '@/store/useBoundStore'
-import PageLoading from '@/components/PageLoading'
+import { useRef, useState } from 'react';
+import { useRouter } from 'next/router';
+import { IoCloseSharp } from 'react-icons/io5';
+import playSound from '@/helpers/playSound';
+import { useBoundStore } from '@/store/useBoundStore';
+import PageLoading from '@/components/PageLoading';
 
 export default function AuthForm() {
-	const { dest, setDest, login, authloading } = useBoundStore(state => state)
-	const dialog = useRef(null)
-	const router = useRouter()
+	const { dest, setDest, login, authloading } = useBoundStore(state => state);
+	const dialog = useRef(null);
+	const router = useRouter();
+
+	// State for expanding/collapsing the sign-up section
+	const [isSignUpExpanded, setIsSignUpExpanded] = useState(false);
 
 	async function handleSubmit(e) {
-		e.preventDefault()
+		e.preventDefault();
 		if (dest && dest !== 'create') {
-			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(router.push('/' + dest))
+			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(router.push('/' + dest));
 		} else if (dest === 'create') {
-			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(document.getElementById('createQuizRoomDialog')?.showModal())
+			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(document.getElementById('createQuizRoomDialog')?.showModal());
 		}
-		setDest(null)
+		setDest(null);
 	}
 
 	function clickOutsideDialog(e) {
-		const rect = dialog.current.getBoundingClientRect()
+		const rect = dialog.current.getBoundingClientRect();
 		if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) {
-			closeDialog()
+			closeDialog();
 		}
 	}
 
 	function closeDialog() {
-		playSound('pop-down')
-		dialog.current.classList.add('hide')
+		playSound('pop-down');
+		dialog.current.classList.add('hide');
 		function handleAnimationEnd() {
-			dialog.current.classList.remove('hide')
-			dialog.current.close()
-			dialog.current.removeEventListener('animationend', handleAnimationEnd)
+			dialog.current.classList.remove('hide');
+			dialog.current.close();
+			dialog.current.removeEventListener('animationend', handleAnimationEnd);
 		}
-		dialog.current.addEventListener('animationend', handleAnimationEnd)
+		dialog.current.addEventListener('animationend', handleAnimationEnd);
 	}
 
 	return (
@@ -47,40 +50,52 @@ export default function AuthForm() {
 				</button>
 
 				<form onSubmit={handleSubmit}>
-					<div className='flex flex-col sm:flex-row gap-4 sm:gap-8 mb-4 md:mb-8'>
-						<div className='flex flex-col gap-4'>
-							<label className='flex flex-col'>
-								<span className='font-semibold mb-2'>Username</span>
-								<input type='text' name='username' className='p-2 border rounded' required />
-							</label>
-							<label className='flex flex-col'>
-								<span className='font-semibold mb-2'>Password</span>
-								<input type='password' name='password' className='p-2 border rounded' required />
-							</label>
+					<div className='flex flex-col sm:flex-row gap-4 sm:gap-8 '>
+						<div className={`expandable ${isSignUpExpanded ? '' : 'expanded py-2'}`}>
+							<div className='flex flex-col gap-4'>
+								<label className='flex flex-col'>
+									<span className='font-semibold mb-2'>Username</span>
+									<input type='text' name='username' className='p-2 mx-2 border rounded' required />
+								</label>
+								<label className='flex flex-col'>
+									<span className='font-semibold mb-2'>Password</span>
+									<input type='password' name='password' className='p-2 mx-2 border rounded' required />
+								</label>
+							</div>
 						</div>
 					</div>
 
-					<hr className='border-b border-gray-300 my-4' />
-
-					{/* Google OAuth Button */}
-					<div className="flex flex-col items-center gap-4 mb-4">
-						<button
-							type="button"
-							className="flex items-center justify-center gap-2 w-full py-3 px-6 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition-all"
-							onClick={() => alert('Google OAuth functionality coming soon!')}
-						>
-							<img
-								src="https://developers.google.com/identity/images/g-logo.png"
-								alt="Google Logo"
-								className="w-5 h-5"
-							/>
-							<span className="text-sm font-medium text-gray-700">Sign in with Google</span>
-						</button>
+					<div className="flex flex-col sm:flex-row gap-4 sm:gap-8 ">
+						<div className={`expandable ${isSignUpExpanded ? 'expanded py-2' : ''}`}>
+							<div className='flex flex-col gap-4'>
+								<label className='flex flex-col'>
+									<span className='font-semibold mb-2'>Email</span>
+									<input type='email' name='email' className='p-2 mx-2 border rounded' required />
+								</label>
+								<label className='flex flex-col'>
+									<span className='font-semibold mb-2'>Username</span>
+									<input type='text' name='signupUsername' className='p-2 mx-2 border rounded' required />
+								</label>
+								<label className='flex flex-col'>
+									<span className='font-semibold mb-2'>Password</span>
+									<input type='password' name='signupPassword' className='p-2 mx-2 border rounded' required />
+								</label>
+							</div>
+						</div>
 					</div>
 
-					<button type='submit' className='btn-primary uppercase py-3 px-6 w-full tracking-widest'>Login</button>
+					<hr className='my-4' />
+
+					<button type='submit' name='singUp' className={`${isSignUpExpanded ? '' : 'hidden'} btn-primary uppercase py-3 px-6 w-full mb-5 tracking-widest`}>Sign Up</button>
+					<button type='submit' name='login' className={`${isSignUpExpanded ? 'hidden' : ''} btn-primary uppercase py-3 px-6 w-full mb-5 tracking-widest`}>Login</button>
+					<div
+						className="flex justify-center items-center cursor-pointer"
+						onClick={() => setIsSignUpExpanded(!isSignUpExpanded)}
+					>
+						<span className="text-gray-700 font-medium">{isSignUpExpanded ? 'Login' : 'Sign-Up'}</span>
+					</div>
 				</form>
 			</dialog>
 		</>
-	)
+	);
 }

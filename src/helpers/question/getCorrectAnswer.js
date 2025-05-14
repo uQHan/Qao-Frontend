@@ -1,6 +1,6 @@
 export default async function getCorrectAnswer(correctAnswer) {
    try {
-      const response = await fetch('/api/get-answer', {
+      const response = await fetch('/api/question/get-answer', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',

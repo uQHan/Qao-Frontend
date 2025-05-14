@@ -15,7 +15,7 @@ export default async function saveAttempt(takeId, questions) {
    };
 
    try {
-      const response = await fetch('/api/save-attempt', {
+      const response = await fetch('/api/take/save-attempt', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',

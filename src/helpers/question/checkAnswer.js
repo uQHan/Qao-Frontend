@@ -1,6 +1,6 @@
 export default async function checkAnswer(selectedAnswer, correctAnswer) {
    try {
-      const response = await fetch('/api/check-answer', {
+      const response = await fetch('/api/question/check-answer', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',

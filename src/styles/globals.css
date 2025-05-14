@@ -110,7 +110,7 @@ body {
     transition: max-height 0.3s ease-out;
 }
 .expandable.expanded {
-    max-height: 200px;
+    max-height: 300px;
 }
 
 /* Loader ============================ */

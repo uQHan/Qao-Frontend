@@ -12,8 +12,8 @@ import { useState } from 'react';
 import playSound from '@/helpers/playSound'
 import ReactCanvasConfetti from 'react-canvas-confetti'
 import { useBoundStore } from '@/store/useBoundStore'
-import saveAttempt from '@/helpers/saveAttempt'
-import getCorrectAnswer from '@/helpers/getCorrectAnswer'
+import saveAttempt from '@/helpers/take/saveAttempt'
+import getCorrectAnswer from '@/helpers/question/getCorrectAnswer'
 
 const canvasStyles = {
 	position: 'fixed',

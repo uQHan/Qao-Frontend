@@ -2,7 +2,7 @@ import { useBoundStore } from '@/store/useBoundStore'
 import playSound from '@/helpers/playSound'
 import starIcon from '@/assets/star.svg'
 import Image from 'next/image'
-import checkAnswer from '@/helpers/checkAnswer'
+import checkAnswer from '@/helpers/question/checkAnswer'
 
 export default function QuestionSlider({ changueCurrent, setTime, getAnotherQuestions }) {
 	const { questions, queries, loadingInfinity, setUserAnswer, setAnswer, error, useLivesCard, setWin, wildCards, currentQuestion, setScore, win, score } = useBoundStore(state => state)

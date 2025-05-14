@@ -5,10 +5,10 @@ import { FaRegQuestionCircle } from 'react-icons/fa';
 import { AiFillBulb, AiFillFile, AiFillFolder, AiOutlineCaretUp } from "react-icons/ai";
 import Image from 'next/image';
 import { useBoundStore } from '@/store/useBoundStore';
-import fileToGenerate from '@/helpers/fileToGenerate';
+import fileToGenerate from '@/helpers/quiz/fileToGenerate';
 
 const QuizQuestionCreator = () => {
-  const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '' });
+  const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '', category: '' });
   const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile, quizId } = useBoundStore(state => state);
 
   const addQuestion = () => {
