@@ -9,7 +9,7 @@ import fileToGenerate from '@/helpers/fileToGenerate';
 
 const QuizQuestionCreator = () => {
   const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '' });
-  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile } = useBoundStore(state => state);
+  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile, quizId } = useBoundStore(state => state);
 
   const addQuestion = () => {
     if (!currentQuestion.question.trim()) {
@@ -123,8 +123,7 @@ const QuizQuestionCreator = () => {
                 const file = e.target.files[0];
                 if (file) {
                   try {
-                    const userId = useBoundStore.getState().user.id; // Get user ID from Zustand state
-                    await fileToGenerate(file, userId); // Send file to backend
+                    await fileToGenerate(file, quizId); // Send file to backend
                     alert('File sent successfully!');
                   } catch (error) {
                     console.error('Error sending file:', error);

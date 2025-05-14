@@ -1,5 +1,5 @@
 import '@/styles/globals.css'
-import { Rubik } from '@next/font/google'
+import { Rubik } from 'next/font/google'
 import Head from 'next/head'
 import AuthForm from './../components/Form/AuthForm';
 import PlayForm from '@/components/Form/PlayForm';
