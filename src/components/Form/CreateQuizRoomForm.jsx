@@ -141,7 +141,7 @@ export default function CreateQuizRoomForm() {
                         <legend className='text-lg font-semibold mb-2'>Time</legend>
                         <div className="cntr shadow-sm relative">
                            <input
-                              id="cbx2"
+                              id="cqr-cbx2"
                               type="checkbox"
                               name="timemode"
                               checked={quizQuery.timemode}
@@ -180,7 +180,7 @@ export default function CreateQuizRoomForm() {
                      <legend className='text-lg font-semibold mb-2'>Categories</legend>
                      <div className='grid grid-cols-4 sm:grid-cols-2 gap-2 h-[80%]'>
                         {categoriesJSON.map(category => (
-                           <label className="relative cursor-pointer" title={category.name}>
+                           <label key={'cqr-' + category.id} className="relative cursor-pointer" title={category.name}>
                               <input
                                  defaultChecked={quizQuery.categories.includes(category.id)}
                                  className="peer relative h-16 opacity-0 w-full md:h-full block cursor-pointer"
