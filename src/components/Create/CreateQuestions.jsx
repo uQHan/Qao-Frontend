@@ -8,20 +8,20 @@ import { useBoundStore } from '@/store/useBoundStore';
 import fileToGenerate from '@/helpers/quiz/fileToGenerate';
 
 const QuizQuestionCreator = () => {
-  const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correct: '', category: '' });
-  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile, quizId } = useBoundStore(state => state);
+  const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correctAnswer: '', category: '' });
+  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile, quizId, generateQuestion } = useBoundStore(state => state);
 
   const addQuestion = () => {
     if (!currentQuestion.question.trim()) {
       alert("Please enter a question.");
       return;
     }
-    if (!currentQuestion.correct) {
+    if (!currentQuestion.correctAnswer) {
       alert("Please select the correct answer.");
       return;
     }
     addCreatedQuestion(currentQuestion);
-    setCurrentQuestion({ question: '', answers: ['', '', '', ''], correct: '' });
+    setCurrentQuestion({ question: '', answers: ['', '', '', ''], correctAnswer: '' });
   };
 
   const updateQuestion = (value) => {
@@ -40,12 +40,12 @@ const QuizQuestionCreator = () => {
       alert("Please provide an answer before selecting it as correct.");
       return;
     }
-    setCurrentQuestion({ ...currentQuestion, correct: selectedAnswer });
+    setCurrentQuestion({ ...currentQuestion, correctAnswer: selectedAnswer });
   };
 
   const selectListAnswer = (qIndex, aIndex, event) => {
     const updatedQuestion = createdQuestions.map((q, i) =>
-      i === qIndex ? { ...q, correct: q.answers[aIndex] } : q
+      i === qIndex ? { ...q, correctAnswer: q.answers[aIndex] } : q
     );
 
     const buttons = event.target.closest('ul').querySelectorAll('button');
@@ -84,7 +84,7 @@ const QuizQuestionCreator = () => {
               />
               <button
                 type="button"
-                className={`p-2 rounded-md ${currentQuestion.correct === opt && opt.trim() !== '' ? 'bg-green-500 text-white' : 'bg-gray-200'
+                className={`p-2 rounded-md ${currentQuestion.correctAnswer === opt && opt.trim() !== '' ? 'bg-green-500 text-white' : 'bg-gray-200'
                   }`}
                 onClick={() => selectCorrectAnswer(oIndex)}
               >
@@ -102,7 +102,7 @@ const QuizQuestionCreator = () => {
             <IoMdSave /> <span>Save Quiz</span>
           </button>
           <button
-            onClick={() => setCurrentQuestion({ question: '', answers: ['', '', '', ''], correct: '' })}
+            onClick={() => setCurrentQuestion({ question: '', answers: ['', '', '', ''], correctAnswer: '' })}
             className="btn-primary flex items-center space-x-2"
           >
             <AiOutlineCaretUp /> <span>Clear</span>
@@ -119,15 +119,14 @@ const QuizQuestionCreator = () => {
               type="file"
               id="fileInput"
               className="hidden"
+              accept="application/pdf, .txt, .docx, .doc, .pptx, .ppt"
               onChange={async (e) => {
                 const file = e.target.files[0];
                 if (file) {
                   try {
                     await fileToGenerate(file, quizId); // Send file to backend
-                    alert('File sent successfully!');
                   } catch (error) {
                     console.error('Error sending file:', error);
-                    alert('Failed to send file.');
                   }
                 }
               }}
@@ -137,7 +136,8 @@ const QuizQuestionCreator = () => {
               className={`btn-primary flex items-center space-x-2 
                 ${!hasFile ? 'bg-blue-400 before:bg-blue-500 text-white cursor-not-allowed' : ''
                 }`}
-              disabled={!hasFile} // Disable until a file has been sent
+              // disabled={!hasFile} // Disable until a file has been sent
+              onClick={() => generateQuestion('13r0hXk2bPMLUUqESQgKodet7byvXbSJ1')}
             >
               <AiFillBulb /> <span>Generate Question</span>
             </button>
@@ -159,7 +159,7 @@ const QuizQuestionCreator = () => {
           <ul className={`md:columns-2 mt-4 ${'answers-' + (i + 1)}`}>
             {question.answers.map((answer, j) => (
               <li key={j + answer} className="relative">
-                <button className={`${'answer-' + (j + 1)} peer btn-primary w-full shadow-sm pl-12 py-3 px-5 rounded mb-6 ${answer.length > 24 ? 'text-sm' : ''} ${answer === question.correct ? 'correctAnswer' : ''}`}
+                <button className={`${'answer-' + (j + 1)} peer btn-primary w-full shadow-sm pl-12 py-3 px-5 rounded mb-6 ${answer.length > 24 ? 'text-sm' : ''} ${answer === question.correctAnswer ? 'correctAnswer' : ''}`}
                   onClick={(e) => selectListAnswer(i, j, e)}> {answer || '---'} </button>
                 <Image className='absolute pointer-events-none left-2 top-1 peer-disabled:translate-y-0 peer-hover:translate-y-[0.25em] peer-active:translate-y-[0.75em] transition-transform z-20 invert' src={`/letters/letter-${['a', 'b', 'c', 'd'][j]}.svg`} width={40} height={40} alt={`Question ${j + 1}]}`} />
               </li>

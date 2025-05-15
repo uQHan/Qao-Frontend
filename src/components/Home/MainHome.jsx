@@ -19,9 +19,14 @@ export default function MainHome() {
 		document.getElementById('newGameDialog')?.showModal()
 	}
 	function handleCreate() {
-		playSound('pop')
-		setDest('create')
-		document.getElementById('authDialog')?.showModal()
+		playSound('pop');
+		const user = JSON.parse(sessionStorage.getItem('user')); // Check if the user is authenticated
+		if (user) {
+			document.getElementById('createQuizRoomDialog')?.showModal(); // Open the create quiz room dialog
+		} else {
+			setDest('create'); // Set the destination for after login
+			document.getElementById('authDialog')?.showModal(); // Show the auth dialog
+		}
 	}
 
 	return (

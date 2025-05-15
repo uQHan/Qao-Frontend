@@ -25,7 +25,8 @@ export const useQuestionsStore = (set, get) => ({
 			.finally(() => set({ loading: false }))
 	},
 	takeQuiz: async (id, name) => {
-		await takeQuiz(id, name)
+		const uid = get().user?.uid
+		await takeQuiz(id, name, uid)
 			.then(data => {
 				set({ questions: data.questions, takeId: data.takeId })
 				const { infiniteLifes } = get();
