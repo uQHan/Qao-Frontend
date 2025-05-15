@@ -1,15 +1,12 @@
-export default function saveQuiz(name, description, startTime, endTime) {
-   const now = new Date().toISOString();
-   const oneHourLater = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+export default function saveQuiz(name, description, startTime, endTime, categories, uid) {
+   
    const payload = {
-      host_id: "host456",
+      user_id: uid,
       title: name,
       description: description,
-      categories_id: ["cat001", "cat002"],
+      categories: categories.map(category => category.toUpperCase().replace(/\s+/g, '_')),
       start_time: startTime + ":00Z",
       end_time: endTime + ":00Z",
-      created_at: now,
-      updated_at: now,
    };
    console.log('Payload:', payload); // Log the payload to be sent to the API
    const save = fetch('/api/quiz/save-quiz', {

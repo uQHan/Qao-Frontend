@@ -1,4 +1,4 @@
-export default async function takeQuiz(id, name) {
+export default async function takeQuiz(id, name, uid) {
    if (!id) {
       throw new Error('ID is required to fetch questions');
    }
@@ -11,7 +11,7 @@ export default async function takeQuiz(id, name) {
          headers: {
             'Content-Type': 'application/json',
          },
-         body: JSON.stringify({ id, name }),
+         body: JSON.stringify({ id, name, uid }),
       });
 
       if (!response.ok) {

@@ -1,12 +1,11 @@
 import CryptoJS from 'crypto-js';
-import { use } from 'react';
 
 export default async function handler(req, res) {
    if (req.method !== 'POST') {
       return res.status(405).json({ message: 'Only POST requests allowed', statusCode: 405 });
    }
 
-   const { id: quizId, name: playerName } = req.body;
+   const { id: quizId, name: playerName, uid: playerId } = req.body;
 
    if (!quizId || !playerName) {
       return res.status(400).json({ message: 'quizId and playerName are required', statusCode: 400 });
@@ -19,7 +18,7 @@ export default async function handler(req, res) {
          headers: {
             'Content-Type': 'application/json',
          },
-         body: JSON.stringify({ quizId, playerName }),
+         body: JSON.stringify({ quizId, playerName, playerId }),
       });
 
       if (!response.ok) {
