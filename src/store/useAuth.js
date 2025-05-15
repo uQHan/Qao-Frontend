@@ -1,23 +1,20 @@
-const defaultUser = {
-   id: 1,
-   name: 'John Doe',
-   email: '',
-   role: 'user',
-   joined: '2023-01-01',
-   completedTests: 0,
-   averageScore: 0,
-   profilePicture: 'default-avatar.jpg',
-   quizzes: [],
-   friends: [],
-   notifications: [],
-   achievements: [],
-   settings: {
-      theme: 'light',
-   }
+import login from "@/helpers/auth/login"
+import loginWithGoogle from "@/helpers/auth/loginWithGoogle"
+import getQuizByUserId from "@/helpers/quiz/getQuizByUserId"
+
+const defaultFirebaseUser = {
+   "uid": "@@@",
+   "email": "@@@",
+   "emailVerified": true,
+   "displayName": "No user",
+   "isAnonymous": false,
+   "photoURL": "default-avatar.jpg",
 }
 
 export const useAuthStore = (set, get) => ({
-   user: defaultUser,
+   user: defaultFirebaseUser,
+   quizzes: [],
+   history: [],
    hostId: null,
    authloading: false,
    dest: null,
@@ -76,5 +73,22 @@ export const useAuthStore = (set, get) => ({
    },
    isAuthenticated: () => {
       return get().user !== null;
+   },
+   loginWithGoogle: async () => {
+      const user = await loginWithGoogle()
+      set({ authloading: true })
+      get().setUser(user)
+      set({ authloading: false })
+      return user
+   },
+   getQuizByUserId: async () => {
+      set({ authloading: true })
+      const userId = get().user?.uid
+      const data = await getQuizByUserId(userId)
+      console.log('data', data)
+      const { quizzes, history } = data
+      set({ quizzes })
+      set({ history })
+      set({ authloading: false })
    },
 })

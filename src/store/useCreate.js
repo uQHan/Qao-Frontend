@@ -1,6 +1,8 @@
 import saveQuestions from "@/helpers/quiz/saveQuestions";
 import saveQuiz from "@/helpers/quiz/saveQuiz";
 import categoriesJSON from '@/assets/categories.json';
+import generateQuestion from "@/helpers/question/generateQuestion";
+import { use } from "react";
 
 export const useCreateQuestionsStore = (set, get) => ({
 	createdQuestions: [],
@@ -9,11 +11,12 @@ export const useCreateQuestionsStore = (set, get) => ({
 	createdWildcards: { skip: 0, half: 0, lives: 0 },
 	quizId: null,
 	quizQuery: {
+		uid: "",
 		roomName: "",
 		roomDesc: "",
 		startTime: "",
 		endTime: "",
-		categories: categoriesJSON.map((cat) => cat.id),
+		categories: categoriesJSON.map((cat) => cat.name),
 	},
 
 	// Clean-up methods
@@ -28,6 +31,16 @@ export const useCreateQuestionsStore = (set, get) => ({
 		set((state) => ({
 			createdQuestions: state.createdQuestions.filter((_, i) => i !== index),
 		})),
+	generateQuestion: async (quizId) => {
+		try {
+			const question = await generateQuestion(quizId);
+			set((state) => ({
+				createdQuestions: [question, ...state.createdQuestions],
+			}));
+		} catch (error) {
+			console.error("Error generating question:", error);
+		}
+	},
 
 	addCreatedCategory: (category) =>
 		set((state) => ({ createdCategories: [...state.createdCategories, category] })),
@@ -64,9 +77,9 @@ export const useCreateQuestionsStore = (set, get) => ({
 	// Save quiz
 	saveQuiz: async () => {
 		const { quizQuery } = get();
-		const { roomName, roomDesc, startTime, endTime } = quizQuery;
+		const { uid, roomName, roomDesc, startTime, endTime, categories } = quizQuery;
 
-		saveQuiz(roomName, roomDesc, startTime, endTime)
+		saveQuiz(roomName, roomDesc, startTime, endTime, categories, uid)
 			.then((response) => {
 				set({ quizId: response.quizId });
 				console.log("QuizId:", response.quizId);

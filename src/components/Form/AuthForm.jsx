@@ -6,7 +6,7 @@ import { useBoundStore } from '@/store/useBoundStore';
 import PageLoading from '@/components/PageLoading';
 
 export default function AuthForm() {
-	const { dest, setDest, login, authloading } = useBoundStore(state => state);
+	const { dest, setDest, login, authloading, loginWithGoogle, logout } = useBoundStore(state => state);
 	const dialog = useRef(null);
 	const router = useRouter();
 
@@ -21,6 +21,24 @@ export default function AuthForm() {
 			await login(e.target.username.value, e.target.password.value).then(closeDialog()).then(document.getElementById('createQuizRoomDialog')?.showModal());
 		}
 		setDest(null);
+	}
+
+	async function handleLogin(e) {
+		e.preventDefault();
+		if (e.target.name === 'google') {
+			try {
+				const user = await loginWithGoogle(); // Wait for the user data to be returned
+				sessionStorage.setItem('user', JSON.stringify(user)); // Store the user in sessionStorage
+				closeDialog(); // Close the dialog
+				if (dest === 'create') {
+					document.getElementById('createQuizRoomDialog')?.showModal(); // Open the create quiz room dialog
+				} else if (dest) {
+					router.push('/' + dest); // Redirect to the destination
+				}
+			} catch (error) {
+				console.error('Google login failed:', error);
+			}
+		}
 	}
 
 	function clickOutsideDialog(e) {
@@ -52,35 +70,39 @@ export default function AuthForm() {
 				<form onSubmit={handleSubmit}>
 					<div className='flex flex-col sm:flex-row gap-4 sm:gap-8 '>
 						<div className={`expandable ${isSignUpExpanded ? '' : 'expanded py-2'}`}>
-							<div className='flex flex-col gap-4'>
-								<label className='flex flex-col'>
-									<span className='font-semibold mb-2'>Username</span>
-									<input type='text' name='username' className='p-2 mx-2 border rounded' required />
-								</label>
-								<label className='flex flex-col'>
-									<span className='font-semibold mb-2'>Password</span>
-									<input type='password' name='password' className='p-2 mx-2 border rounded' required />
-								</label>
-							</div>
+							{!isSignUpExpanded && ( // Render only when not in Sign-Up mode
+								<div className='flex flex-col gap-4'>
+									<label className='flex flex-col'>
+										<span className='font-semibold mb-2'>Username</span>
+										<input type='text' name='username' className='p-2 mx-2 border rounded' required />
+									</label>
+									<label className='flex flex-col'>
+										<span className='font-semibold mb-2'>Password</span>
+										<input type='password' name='password' className='p-2 mx-2 border rounded' required />
+									</label>
+								</div>
+							)}
 						</div>
 					</div>
 
 					<div className="flex flex-col sm:flex-row gap-4 sm:gap-8 ">
 						<div className={`expandable ${isSignUpExpanded ? 'expanded py-2' : ''}`}>
-							<div className='flex flex-col gap-4'>
-								<label className='flex flex-col'>
-									<span className='font-semibold mb-2'>Email</span>
-									<input type='email' name='email' className='p-2 mx-2 border rounded' required />
-								</label>
-								<label className='flex flex-col'>
-									<span className='font-semibold mb-2'>Username</span>
-									<input type='text' name='signupUsername' className='p-2 mx-2 border rounded' required />
-								</label>
-								<label className='flex flex-col'>
-									<span className='font-semibold mb-2'>Password</span>
-									<input type='password' name='signupPassword' className='p-2 mx-2 border rounded' required />
-								</label>
-							</div>
+							{isSignUpExpanded && ( // Render only when in Sign-Up mode
+								<div className='flex flex-col gap-4'>
+									<label className='flex flex-col'>
+										<span className='font-semibold mb-2'>Email</span>
+										<input type='email' name='email' className='p-2 mx-2 border rounded' required />
+									</label>
+									<label className='flex flex-col'>
+										<span className='font-semibold mb-2'>Username</span>
+										<input type='text' name='signupUsername' className='p-2 mx-2 border rounded' required />
+									</label>
+									<label className='flex flex-col'>
+										<span className='font-semibold mb-2'>Password</span>
+										<input type='password' name='signupPassword' className='p-2 mx-2 border rounded' required />
+									</label>
+								</div>
+							)}
 						</div>
 					</div>
 
@@ -92,7 +114,24 @@ export default function AuthForm() {
 						className="flex justify-center items-center cursor-pointer"
 						onClick={() => setIsSignUpExpanded(!isSignUpExpanded)}
 					>
-						<span className="text-gray-700 font-medium">{isSignUpExpanded ? 'Login' : 'Sign-Up'}</span>
+						<span className="text-gray-700 font-medium underline underline-offset-2">{isSignUpExpanded ? 'Login' : 'Sign-Up'}</span>
+					</div>
+					{/* Google OAuth Button */}
+					<div className="flex flex-col items-center gap-4 my-4">
+						<span className="text-gray-500 text-sm">or</span>
+						<button
+							type="button"
+							name='google'
+							className="flex items-center justify-center gap-2 w-full py-3 px-6 border border-gray-300 rounded-md shadow-sm hover:bg-gray-100 transition-all"
+							onClick={(e) => handleLogin(e)}
+						>
+							<img
+								src="https://developers.google.com/identity/images/g-logo.png"
+								alt="Google Logo"
+								className="w-5 h-5"
+							/>
+							<span className="text-sm font-medium text-gray-700">Sign in with Google</span>
+						</button>
 					</div>
 				</form>
 			</dialog>
