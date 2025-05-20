@@ -26,14 +26,14 @@ const QuestionSidebar = ({ questions }) => {
 			<button
 				title={showInfo ? "Hide info" : "Show info"}
 				onClick={() => setShowInfo((prev) => !prev)}
-				className="fixed bottom-4 left-4 lg:hidden bg-white z-20 rounded-md p-1"
+				className="fixed bottom-4 left-4 2xl:hidden bg-white z-20 rounded-md p-1"
 			>
 				<AiFillInfoCircle className="text-[28px] text-slate-900" />
 			</button>
 
 			{/* Sidebar */}
 			<aside
-				className={`fixed w-55 h-fit transition-all z-10 lg:bottom-4 left-4 md:top-1/2 md:-translate-y-1/2 text-center text-slate-900 font-medium lg:!scale-100 lg:!opacity-100 ${showInfo ? "bottom-12 scale-100 opacity-100" : "bottom-0 scale-20 opacity-0"
+				className={`fixed w-55 h-fit transition-all z-10 shadow-lg lg:bottom-4 left-4 md:top-1/2 md:-translate-y-1/2 text-center text-slate-900 font-medium 2xl:!scale-100 2xl:!opacity-100 ${showInfo ? "bottom-12 scale-100 opacity-100" : "bottom-0 scale-20 opacity-0"
 					}`}
 			>
 				{/* Time Mode Toggle */}

@@ -6,10 +6,12 @@ import { AiFillBulb, AiFillFile, AiFillFolder, AiOutlineCaretUp } from "react-ic
 import Image from 'next/image';
 import { useBoundStore } from '@/store/useBoundStore';
 import fileToGenerate from '@/helpers/quiz/fileToGenerate';
+import { BsArrowRepeat } from 'react-icons/bs';
 
 const QuizQuestionCreator = () => {
   const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correctAnswer: '', category: '' });
   const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile, quizId, generateQuestion } = useBoundStore(state => state);
+  const [fileSelected, setFileSelected] = useState(false);
 
   const addQuestion = () => {
     if (!currentQuestion.question.trim()) {
@@ -60,9 +62,22 @@ const QuizQuestionCreator = () => {
 
   return (
     <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-        <FaRegQuestionCircle className="mr-2 text-blue-500" /> Create a Quiz
-      </h2>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+        <h2 className="text-2xl font-bold text-gray-800 flex items-center">
+          <FaRegQuestionCircle className="mr-2 text-blue-500" /> Create a Quiz
+        </h2>
+        <div className="flex items-center justify-end space-x-2 mt-2 md:mt-0">
+          <button onClick={saveQuestions} className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3">
+            <IoMdSave />
+          </button>
+          <button
+            onClick={() => setCurrentQuestion({ question: '', answers: ['', '', '', ''], correctAnswer: '' })}
+            className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3"
+          >
+            <BsArrowRepeat />
+          </button>
+        </div>
+      </div>
 
       <div className="border-b pb-4 mb-4">
         <input
@@ -94,27 +109,14 @@ const QuizQuestionCreator = () => {
           ))}
         </div>
 
-        <div className="flex flex-wrap space-x-4 my-4">
-          <button onClick={addQuestion} className="btn-primary flex items-center space-x-2">
-            <FiPlus /> <span>Add Question</span>
-          </button>
-          <button onClick={saveQuestions} className="btn-primary flex items-center space-x-2">
-            <IoMdSave /> <span>Save Quiz</span>
-          </button>
+        <div className="flex flex-wrap space-x-2 my-4">
           <button
-            onClick={() => setCurrentQuestion({ question: '', answers: ['', '', '', ''], correctAnswer: '' })}
-            className="btn-primary flex items-center space-x-2"
+            onClick={addQuestion}
+            className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3"
           >
-            <AiOutlineCaretUp /> <span>Clear</span>
+            <FiPlus /> <span>Add</span>
           </button>
-          <div className="flex space-x-4">
-            <button
-              className="btn-primary flex items-center space-x-2"
-              onClick={() => document.getElementById('fileInput').click()} // Trigger file input
-            >
-              <AiFillFile /> <span>Select File</span>
-            </button>
-
+          <div className="flex space-x-2">
             <input
               type="file"
               id="fileInput"
@@ -123,24 +125,33 @@ const QuizQuestionCreator = () => {
               onChange={async (e) => {
                 const file = e.target.files[0];
                 if (file) {
+                  setFileSelected(true);
                   try {
                     await fileToGenerate(file, quizId); // Send file to backend
                   } catch (error) {
                     console.error('Error sending file:', error);
                   }
+                } else {
+                  setFileSelected(false);
                 }
               }}
             />
 
             <button
-              className={`btn-primary flex items-center space-x-2 
-                ${!hasFile ? 'bg-blue-400 before:bg-blue-500 text-white cursor-not-allowed' : ''
-                }`}
-              // disabled={!hasFile} // Disable until a file has been sent
-              onClick={() => generateQuestion('13r0hXk2bPMLUUqESQgKodet7byvXbSJ1')}
+              className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3"
+              onClick={() => document.getElementById('fileInput').click()} // Trigger file input
             >
-              <AiFillBulb /> <span>Generate Question</span>
+              <AiFillFile /> <span>Select File</span>
             </button>
+
+            {fileSelected && (
+              <button
+                className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3"
+                onClick={() => generateQuestion('13r0hXk2bPMLUUqESQgKodet7byvXbSJ1')}
+              >
+                <AiFillBulb /> <span>Generate Question</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
