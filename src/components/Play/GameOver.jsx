@@ -267,10 +267,10 @@ export default function GameOver() {
 					</div>
 
 					{/* Chatwoot Chat Panel */}
-					<div className="flex-1 flex flex-col w-full md:w-1/3 max-h-[60vh]">
+					<div className="flex-1 flex flex-col w-full md:w-1/3 max-h-[80vh] min-h-[320px]">
 						<iframe
 							src="https://app.chatwoot.com/widget?website_token=GLCbXECkHvwiQQnNbEsxnCA6"
-							className="flex-1 w-full h-80 md:h-full rounded-md border min-h-[320px]"
+							className="flex-1 w-full h-[60vh] md:h-full rounded-md border min-h-[320px]"
 							title="Chatwoot"
 						/>
 					</div>
