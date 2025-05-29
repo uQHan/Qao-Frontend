@@ -1,15 +1,16 @@
-export default async function saveQuestions(questions, quizId) {
+export default async function updateQuestions(questions, quizId) {
    const formattedQuestions = questions.map((q) => ({
-      quiz_id: quizId,
+      questionId: q.id ?? null,
+      quizId: quizId,
       content: q.question,
       answers: q.answers, 
-      correct_answer: q.correctAnswer,
+      correctAnswer: q.correctAnswer,
    }));
 
    console.log('Formatted Questions:', formattedQuestions); 
 
    try {
-      const response = await fetch('/api/quiz/save-questions', {
+      const response = await fetch('/api/quiz/update-questions', {
          method: 'POST',
          headers: {
             'Content-Type': 'application/json',

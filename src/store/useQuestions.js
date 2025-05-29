@@ -11,6 +11,7 @@ export const useQuestionsStore = (set, get) => ({
 	currentQuestion: 1,
 	score: 1,
 	win: undefined,
+	quizQuestions: [],
 	getQuestions: (topics, number, infinity) => {
 		infinity ? set({ loadingInfinity: true }) : set({ loading: true })
 		getQuestions(topics, number)
@@ -18,11 +19,15 @@ export const useQuestionsStore = (set, get) => ({
 			.catch(err => set({ error: [true, err] }))
 			.finally(() => infinity ? set({ loadingInfinity: false }) : set({ loading: false }))
 	},
-	getQuestionsByQuizId: (id, name) => {
-		getQuestionsByQuizId(id, name)
-			.then(data => set({ questions: data }))
-			.catch(err => set({ error: [true, err] }))
-			.finally(() => set({ loading: false }))
+	getQuestionsByQuizId: async (id) => {
+		try {
+			const data = await getQuestionsByQuizId(id)
+			set({ quizQuestions: data })
+		} catch (err) {
+			set({ error: [true, err] })
+		} finally {
+			set({ loading: false })
+		}
 	},
 	takeQuiz: async (id, name) => {
 		const uid = get().user?.uid

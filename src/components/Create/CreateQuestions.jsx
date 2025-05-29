@@ -10,7 +10,7 @@ import { BsArrowRepeat } from 'react-icons/bs';
 
 const QuizQuestionCreator = () => {
   const [currentQuestion, setCurrentQuestion] = useState({ question: '', answers: ['', '', '', ''], correctAnswer: '', category: '' });
-  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, hasFile, quizId, generateQuestion } = useBoundStore(state => state);
+  const { addCreatedQuestion, createdQuestions, removeCreatedQuestion, saveQuestions, quizId, generateQuestion, update, updateQuizQuestions, setCreateQuestions } = useBoundStore(state => state);
   const [fileSelected, setFileSelected] = useState(false);
 
   const addQuestion = () => {
@@ -46,10 +46,17 @@ const QuizQuestionCreator = () => {
   };
 
   const selectListAnswer = (qIndex, aIndex, event) => {
-    const updatedQuestion = createdQuestions.map((q, i) =>
+    // Update the correct answer in the store/state
+    const updatedQuestions = createdQuestions.map((q, i) =>
       i === qIndex ? { ...q, correctAnswer: q.answers[aIndex] } : q
     );
+    // If using Zustand or similar:
+    // add a setCreatedQuestions or similar action in your store
+    if (typeof setCreatedQuestions === 'function') {
+      setCreateQuestions(updatedQuestions);
+    }
 
+    // Visual feedback (optional)
     const buttons = event.target.closest('ul').querySelectorAll('button');
     buttons.forEach((btn) => btn.classList.remove('correctAnswer'));
 
@@ -67,7 +74,16 @@ const QuizQuestionCreator = () => {
           <FaRegQuestionCircle className="mr-2 text-blue-500" /> Create a Quiz
         </h2>
         <div className="flex items-center justify-end space-x-2 mt-2 md:mt-0">
-          <button onClick={saveQuestions} className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3">
+          <button
+            onClick={() => {
+              if (update) {
+                updateQuizQuestions();
+              } else {
+                saveQuestions();
+              }
+            }}
+            className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3"
+          >
             <IoMdSave />
           </button>
           <button

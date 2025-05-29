@@ -5,9 +5,18 @@ import CreateQuestions from '@/components/Create/CreateQuestions'
 import { useBoundStore } from '@/store/useBoundStore'
 import CreateHeader from '@/components/Create/CreateHeader'
 import CreateInfo from '@/components/Create/CreateInfo'
+import { useRouter } from 'next/router'
 
 export default function Create() {
 	const { cleanCreateQuestions } = useBoundStore(state => state)
+	const router = useRouter()
+
+	useEffect(() => {
+		if (typeof window !== 'undefined' && !sessionStorage.getItem('user')) {
+			router.replace('/')
+		}
+	}, [])
+
 	useEffect(() => {
 		window.onbeforeunload = () => 'Are you sure you want to leave?'
 		return () => cleanCreateQuestions

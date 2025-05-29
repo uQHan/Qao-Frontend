@@ -12,6 +12,12 @@ import { useRouter } from 'next/router'
 export default function Profile() {
 	const { user, logout, authloading, getQuizByUserId } = useBoundStore(state => state)
 	const router = useRouter()
+	
+	useEffect(() => {
+		if (typeof window !== 'undefined' && !sessionStorage.getItem('user')) {
+			router.replace('/')
+		}
+	}, [])
 
 	useEffect(() => { window.onbeforeunload = () => null }, [])
 	useEffect(() => {

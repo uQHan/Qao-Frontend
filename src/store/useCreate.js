@@ -3,6 +3,8 @@ import saveQuiz from "@/helpers/quiz/saveQuiz";
 import categoriesJSON from '@/assets/categories.json';
 import generateQuestion from "@/helpers/question/generateQuestion";
 import { use } from "react";
+import getQuestionsByQuizId from "@/helpers/question/getQuestionsByQuizId";
+import updateQuestions from "@/helpers/quiz/updateQuizQuestions";
 
 export const useCreateQuestionsStore = (set, get) => ({
 	createdQuestions: [],
@@ -18,9 +20,16 @@ export const useCreateQuestionsStore = (set, get) => ({
 		endTime: "",
 		categories: categoriesJSON.map((cat) => cat.name),
 	},
+	update: false,
 
 	// Clean-up methods
-	cleanCreateQuestions: () => set({ createdQuestions: [] }),
+	cleanCreateQuestions: () => {
+		set({ createdQuestions: [] });
+		set({ quizId: null });
+		set({ update: false });
+		set({ createdWildcards: { skip: 0, half: 0, lives: 0 } });
+		set({ createdCategories: [] });
+	},
 	cleanCreateWildcards: () => set({ createdWildcards: { skip: 0, half: 0, lives: 0 } }),
 	cleanCreateCategories: () => set({ createdCategories: [] }),
 
@@ -92,5 +101,35 @@ export const useCreateQuestionsStore = (set, get) => ({
 			});
 	},
 
+	setCreatedQuestions: async (id) => {
+		try {
+			const data = await getQuestionsByQuizId(id)
+			set({ createdQuestions: data });
+			set({ quizId: id });
+		} catch (err) {
+			set({ error: [true, err] })
+		} finally {
+			set({ loading: false })
+		}
+	},
+
+	setCreateQuestions: (questions) => set({ createdQuestions: questions }),
+
+	updateQuizQuestions: async () => {
+		const { createdQuestions, quizId } = get();
+		if (!quizId) {
+			console.error("Quiz ID is missing. Cannot save questions.");
+			return;
+		}
+
+		try {
+			const response = await updateQuestions(createdQuestions, quizId);
+			console.log("Questions saved successfully:", response);
+		} catch (error) {
+			console.error("Error saving questions:", error);
+		}
+	},
+
+	setUpdate: (update) => set({ update }),
 	setQuizId: (quizId) => set({ quizId }),
 });

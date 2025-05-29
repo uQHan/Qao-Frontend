@@ -31,32 +31,6 @@ export default function GameOver() {
 	const { showAsk } = useState(false);
 	const refAnimationInstance = useRef(null)
 
-	useEffect(() => {
-		// Prevent duplicate script
-		if (!window.chatwootSDK) {
-			const BASE_URL = "https://app.chatwoot.com";
-			const g = document.createElement("script");
-			g.src = BASE_URL + "/packs/js/sdk.js";
-			g.defer = true;
-			g.async = true;
-			g.onload = function () {
-				window.chatwootSDK.run({
-					websiteToken: 'GLCbXECkHvwiQQnNbEsxnCA6',
-					baseUrl: BASE_URL,
-					hideMessageBubble: true // Hide the default bubble
-				});
-			};
-			document.body.appendChild(g);
-
-			// Cleanup: remove script and widget on unmount
-			return () => {
-				g.remove();
-				const chatwootWidget = document.getElementById('chatwoot-live-chat-widget');
-				if (chatwootWidget) chatwootWidget.remove();
-			};
-		}
-	}, []);
-
 	const showCorrectAnswer = async (questionIndex) => {
 		const question = questions[questionIndex]; // Get the specific question
 		if (queries.quizmode) {
@@ -65,9 +39,9 @@ export default function GameOver() {
 			if (correctAnswer) {
 				setDecryptedAnswer(questionIndex, correctAnswer);
 
-				alert(`Correct Answer: ${correctAnswer}`);
+				// alert(`Correct Answer: ${correctAnswer}`);
 			} else {
-				alert('Error fetching the correct answer');
+				// alert('Error fetching the correct answer');
 			}
 		}
 	};
@@ -228,7 +202,7 @@ export default function GameOver() {
 											</li>
 										))}
 									</ul>
-									<>
+									{queries.quizmode && <>
 										<div
 											className="flex justify-center items-center cursor-pointer mt-2"
 											onClick={() =>
@@ -243,37 +217,38 @@ export default function GameOver() {
 											className={`expandable ${expandedQuestionIndex === index ? 'expanded py-2' : ''}`}
 										>
 											<div className="flex flex-col gap-2">
-												{queries.quizmode &&
-													<button
-														className="px-4 py-2 mb-1 text-sm rounded-md btn-primary correctAnswer"
-														onClick={() => showCorrectAnswer(index)}
-													>
-														Show Correct Answer
-													</button>
-												}
+
 												<button
+													className="px-4 py-2 mb-1 text-sm rounded-md btn-primary correctAnswer"
+													onClick={() => showCorrectAnswer(index)}
+												>
+													Show Correct Answer
+												</button>
+
+												{/* <button
 													className="px-4 text-sm btn-primary"
 													name="askAIButton"
 													onClick={() => handleAskAI(question.question)}
 												>
 													Ask AI
-												</button>
+												</button> */}
 											</div>
 										</div>
 									</>
+									}
 								</li>
 							))}
 						</ul>
 					</div>
 
-					{/* Chatwoot Chat Panel */}
+					{/* Chatwoot Chat Panel
 					<div className="flex-1 flex flex-col w-full md:w-1/3 max-h-[80vh] min-h-[320px]">
 						<iframe
 							src="https://app.chatwoot.com/widget?website_token=GLCbXECkHvwiQQnNbEsxnCA6"
 							className="flex-1 w-full h-[60vh] md:h-full rounded-md border min-h-[320px]"
 							title="Chatwoot"
 						/>
-					</div>
+					</div> */}
 				</div>
 			</dialog>
 		</>
