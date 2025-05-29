@@ -3,7 +3,7 @@ export default async function fileToGenerate(file, quizId) {
 
     try {
         const formData = new FormData();
-        formData.append('quiz_id', 500000); // Add quiz ID
+        formData.append('quiz_id', quizId); // Add quiz ID
         formData.append('data', file); // Add the file itself
 
         const response = await fetch(`${process.env.NEXT_PUBLIC_REST_API_URL}/n8n/upload`, {
