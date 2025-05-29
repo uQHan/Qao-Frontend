@@ -121,8 +121,8 @@ export default function CreateQuizRoomForm() {
                      </div>
                   </div>
 
-                  <div className='flex flex-col gap-4'>
-                     {/* Question Amount Selection */}
+                  {/* <div className='flex flex-col gap-4'>
+
                      <fieldset className='p-1 relative'>
                         <legend className='text-lg font-semibold mb-2'>Questions</legend>
                         <input
@@ -137,7 +137,7 @@ export default function CreateQuizRoomForm() {
                         <span className='block text-center mt-2 font-semibold'>{quizQuery.questions} Questions</span>
                      </fieldset>
 
-                     {/* Time Mode Selection */}
+
                      <fieldset className='p-1 relative'>
                         <legend className='text-lg font-semibold mb-2'>Time</legend>
                         <div className="cntr shadow-sm relative">
@@ -173,7 +173,7 @@ export default function CreateQuizRoomForm() {
                            ))}
                         </div>
                      </fieldset>
-                  </div>
+                  </div> */}
 
 
                   {/* Categories Selection */}
