@@ -1,6 +1,8 @@
-import login from "@/helpers/auth/login"
+import login from "@/helpers/auth/signIn"
 import loginWithGoogle from "@/helpers/auth/loginWithGoogle"
 import getQuizByUserId from "@/helpers/quiz/getQuizByUserId"
+import signUp from "@/helpers/auth/signUp"
+import signIn from "@/helpers/auth/signIn"
 
 const defaultFirebaseUser = {
    "uid": "@@@",
@@ -26,43 +28,13 @@ export const useAuthStore = (set, get) => ({
    },
    login: async (username, password) => {
       set({ authloading: true })
-      // const response = await fetch('/api/login', {
-      //    method: 'POST',
-      //    headers: {
-      //       'Content-Type': 'application/json',
-      //    },
-      //    body: JSON.stringify({ username, password }),
-      // });
-
-      // if (response.ok) {
-      //    const userData = await response.json();
-      //    set({ user: userData });
-      //    // const router = useRouter();
-      //    // router.push('/profile');
-      // } else {
-      //    throw new Error('Login failed');
-      // }
+      signIn(username, password)
       await new Promise((resolve) => setTimeout(resolve, 1000));
       set({ authloading: false })
    },
    register: async (username, password) => {
       set({ authloading: true })
-      const response = await fetch('/api/register', {
-         method: 'POST',
-         headers: {
-            'Content-Type': 'application/json',
-         },
-         body: JSON.stringify({ username, password }),
-      });
-
-      if (response.ok) {
-         const userData = await response.json();
-         set({ user: userData });
-         const router = useRouter();
-         router.push('/profile');
-      } else {
-         throw new Error('Login failed');
-      }
+      signUp(username, password)
       set({ authloading: false })
    },
    logout: async () => {
