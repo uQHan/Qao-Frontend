@@ -19,13 +19,13 @@ export default async function handler(req, res) {
          body: JSON.stringify({ quiz_id: id }),
       });
 
-      if (!response.ok) {
-         const errorData = await response.json();
-         return res.status(response.status).json({
-            message: errorData.message || 'Failed to fetch question',
-            statusCode: response.status,
-         });
-      }
+      // if (!response.ok) {
+      //    const errorData = await response.json();
+      //    return res.status(response.status).json({
+      //       message: errorData.message || 'Failed to fetch question',
+      //       statusCode: response.status,
+      //    });
+      // }
 
       const data = await response.json();
 

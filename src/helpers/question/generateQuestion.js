@@ -11,10 +11,10 @@ export default async function generateQuestion(quizId) {
          body: JSON.stringify({ id: quizId }), 
       });
 
-      if (!response.ok) {
-         const errorData = await response.json();
-         throw new Error(errorData.message || 'Failed to fetch questions');
-      }
+      // if (!response.ok) {
+      //    const errorData = await response.json();
+      //    throw new Error(errorData.message || 'Failed to fetch questions');
+      // }
 
       const data = await response.json();
       return data; 
