@@ -163,7 +163,7 @@ const QuizQuestionCreator = () => {
             {fileSelected && (
               <button
                 className="btn-primary flex items-center space-x-2 text-sm px-3 py-2 md:text-base md:px-5 md:py-3"
-                onClick={() => generateQuestion('13r0hXk2bPMLUUqESQgKodet7byvXbSJ1')}
+                onClick={() => generateQuestion(quizId)}
               >
                 <AiFillBulb /> <span>Generate Question</span>
               </button>
